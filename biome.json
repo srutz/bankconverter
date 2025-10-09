@@ -22,8 +22,11 @@
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
-    "enabled": true,
+    "enabled": true,  
     "rules": {
+      "style":{
+        "useImportType": "off"
+      },
       "recommended": true
     }
   },

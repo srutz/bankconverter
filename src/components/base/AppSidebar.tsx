@@ -1,4 +1,5 @@
-import { Home, Settings, Sheet } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Banknote, Home, LucideAirplay, LucideBanknote, LucideBanknoteX, LucideBook, LucideBookKey, LucideBookOpen, Settings, Sheet } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +34,7 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader>Bankconverter</SidebarHeader>
+      <SidebarHeader className="flex flex-row gap-1"><LucideBookKey/>Bankconverter</SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Menü</SidebarGroupLabel>
@@ -42,10 +43,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
