@@ -2,7 +2,7 @@
  * CAMT.053 to MT940 Converter
  */
 
-import type { Balance, Statement as CAMTStatement, Camt053Document, Entry, EntryDetails } from './Camt';
+import type { Balance, Camt053Document, Statement as CamtStatement, Entry, EntryDetails } from './Camt';
 import type {
   ClosingBalance,
   DebitCredit,
@@ -37,9 +37,9 @@ export class CamtToMt940Converter {
     };
   }
 
-  private convertStatement(camtStmt: CAMTStatement, index: number): Mt940Statement {
-    const openingBalance = this.findBalance(camtStmt.balances, 'OPBD');
-    const closingBalance = this.findBalance(camtStmt.balances, 'CLBD');
+  private convertStatement(camtStmt: CamtStatement, index: number): Mt940Statement {
+    const openingBalance = this.findOpeningBalance(camtStmt.balances);
+    const closingBalance = this.findClosingBalance(camtStmt.balances);
 
     if (!openingBalance || !closingBalance) {
       throw new Error(`Statement ${camtStmt.identification}: Missing opening or closing balance`);
@@ -176,6 +176,43 @@ export class CamtToMt940Converter {
 
   private findBalance(balances: Balance[], type: string): Balance | undefined {
     return balances.find(b => b.type === type);
+  }
+
+  private findOpeningBalance(balances: Balance[]): Balance | undefined {
+    // Try different opening balance types in order of preference
+    // OPBD = Opening Booked (standard)
+    // PRCD = Previously Closed Booked (acts as opening for next period)
+    // ITBD = Interim Booked
+    const openingTypes = ['OPBD', 'PRCD', 'ITBD'];
+    
+    for (const type of openingTypes) {
+      const balance = this.findBalance(balances, type);
+      if (balance) {
+        return balance;
+      }
+    }
+    
+    // If no specific opening balance found, try to find any balance that could serve as opening
+    // Look for the first balance that's not a closing balance
+    return balances.find(b => !['CLBD', 'CLAV', 'FWAV'].includes(b.type));
+  }
+
+  private findClosingBalance(balances: Balance[]): Balance | undefined {
+    // Try different closing balance types in order of preference
+    // CLBD = Closing Booked (standard)
+    // CLAV = Closing Available
+    // FWAV = Forward Available
+    const closingTypes = ['CLBD', 'CLAV', 'FWAV'];
+    
+    for (const type of closingTypes) {
+      const balance = this.findBalance(balances, type);
+      if (balance) {
+        return balance;
+      }
+    }
+    
+    // If no specific closing balance found, return the last balance
+    return balances[balances.length - 1];
   }
 
   private convertToMt940Balance(balance: Balance, tag: '60F' | '60M' | '62F' | '62M'): OpeningBalance | ClosingBalance {

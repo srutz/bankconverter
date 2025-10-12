@@ -45,7 +45,7 @@ export function EditorPanel({ editor } : { editor: Editor }) {
         </button>
         <pre className="h-1 grow self-stretch overflow-auto text-xs bg-white p-4 rounded-md border border-gray-300">
           {mt940Result && parseResult?.success 
-            ? mt940Result.toString() : (
+            ? JSON.stringify(mt940Result, null, 4) : (
               parseResult?.success
               ? 'No data to convert' 
               : `Error parsing CAMT.053 file: ${parseResult?.errors?.join(', ') || 'Unknown error'}`
