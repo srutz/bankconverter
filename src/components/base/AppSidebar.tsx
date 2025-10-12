@@ -1,5 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Banknote, Home, LucideAirplay, LucideBanknote, LucideBanknoteX, LucideBook, LucideBookKey, LucideBookOpen, Settings, Sheet } from "lucide-react";
+import {
+  Home,
+  LucideBookKey,
+  Settings,
+  Sheet,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +39,10 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader className="flex flex-row gap-1"><LucideBookKey/>Bankconverter</SidebarHeader>
+      <SidebarHeader className="flex flex-row gap-1">
+        <LucideBookKey />
+        Bankconverter
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Menü</SidebarGroupLabel>

@@ -22,10 +22,15 @@
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
+    
     "enabled": true,  
     "rules": {
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      },
       "style":{
-        "useImportType": "off"
+        "useImportType": "off",
+        "useTemplate": "off"
       },
       "recommended": true
     }

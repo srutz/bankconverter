@@ -1,23 +1,44 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LucideUpload } from "lucide-react";
-import { Block } from "@/components/base/Block";
-import { H2 } from "@/components/base/H2";
+import { useAtomValue } from 'jotai'
 import { Page } from "@/components/base/Page";
+import { Tabs } from "@/components/base/Tabs";
+import { editorsAtom } from "@/components/tabs/atoms";
+import { EditorPanel } from "@/components/tabs/EditorPanel";
+import { UploadTab } from "@/components/tabs/UploadTab";
+
 
 export const Route = createFileRoute("/_main/")({
   component: RouteComponent,
 });
 
+export type InterfaceStyle = "tabs" | "stack"
+  const style: InterfaceStyle = "stack"; // This could be made dynamic based on user preference
+
 function RouteComponent() {
+  const editors = useAtomValue(editorsAtom);
   return (
-    <Page>
-      <Block className="min-h-[200px] self-center flex flex-col items-center">
-        <H2>CAMT CONVERTER</H2>
-        <div className="grow flex flow-col items-center justify-center">
-        <LucideUpload className="mt-4 h-16 w-16 text-muted-foreground" />
+    <Page className="pt-0 px-1">
+      {style === "tabs" ? (
+      <Tabs
+        tabs={[
+          { name: "Upload", content: <UploadTab />, visible: true },
+          ...editors.map((editor) => ({
+            name: editor.name,
+            content: <div>{editor.content}</div>,
+            visible: true,
+          })),
+        ]}
+      ></Tabs>
+      ) : (
+        <div className="h-1 grow flex flex-col gap-4">
+          {editors.length === 0 ? (
+            <UploadTab />
+          ) : (
+            <EditorPanel editor={editors[0]} />
+          )}
         </div>
-        <p className="mt-4 text-muted-foreground">Upload your CAMT file</p>
-      </Block>
+      )
+    }
     </Page>
   );
 }
