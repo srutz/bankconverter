@@ -8,9 +8,9 @@ import type {
   Balance,
   BalanceType,
   BankTransactionCode,
-  CAMT053Document,
-  CAMT053ParseResult as Camt053ParseResult,
-  CAMT053ParserConfig as Camt053ParserConfig,
+  Camt053Document,
+  Camt053ParseResult,
+  Camt053ParserConfig,
   CreditDebitCode,
   Entry,
   EntryDetails,
@@ -67,12 +67,20 @@ export class Camt053Parser {
     }
   }
 
-  private parseDocument(xmlDoc: Document): CAMT053Document {
+  private parseDocument(xmlDoc: Document): Camt053Document {
     const root = xmlDoc.documentElement;
     const ns = root.namespaceURI || '';
 
-    const grpHdr = this.getElement(root, 'GrpHdr', ns);
-    const stmts = this.getElements(root, 'Stmt', ns);
+    // Many CAMT files wrap statements in a container element such as
+    // <BkToCstmrStmt> or <BkToCstmrAcctRpt>. Try those first, then fall
+    // back to the document root so both styles are supported.
+    const container =
+      this.getElement(root, 'BkToCstmrStmt', ns) ||
+      this.getElement(root, 'BkToCstmrAcctRpt', ns) ||
+      root;
+
+    const grpHdr = this.getElement(container, 'GrpHdr', ns);
+    const stmts = this.getElements(container, 'Stmt', ns);
 
     return {
       groupHeader: this.parseGroupHeader(grpHdr, ns),
@@ -312,7 +320,7 @@ export class Camt053Parser {
     return element?.textContent?.trim() || '';
   }
 
-  private validateBalances(doc: CAMT053Document): void {
+  private validateBalances(doc: Camt053Document): void {
     for (const stmt of doc.statements) {
       const opening = stmt.balances.find(b => b.type === 'OPBD');
       const closing = stmt.balances.find(b => b.type === 'CLBD');

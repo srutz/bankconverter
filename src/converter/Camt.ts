@@ -182,21 +182,21 @@ type GroupHeader = {
 };
 
 // CAMT.053 Document
-type CAMT053Document = {
+type Camt053Document = {
   groupHeader: GroupHeader;
   statements: Statement[];
 };
 
 // Parser result
-type CAMT053ParseResult = {
+type Camt053ParseResult = {
   success: boolean;
-  data?: CAMT053Document;
+  data?: Camt053Document;
   errors?: string[];
   warnings?: string[];
 };
 
 // Parser configuration
-type CAMT053ParserConfig = {
+type Camt053ParserConfig = {
   strictMode?: boolean;
   validateBalances?: boolean;
   parseNestedTransactions?: boolean;
@@ -217,7 +217,7 @@ export type {
   Entry,
   Statement,
   GroupHeader,
-  CAMT053Document,
-  CAMT053ParseResult,
-  CAMT053ParserConfig,
+  Camt053Document,
+  Camt053ParseResult,
+  Camt053ParserConfig,
 };

@@ -2,7 +2,7 @@
  * CAMT.053 to MT940 Converter
  */
 
-import type { Balance, CAMT053Document, Statement as CAMTStatement, Entry, EntryDetails } from './Camt';
+import type { Balance, Statement as CAMTStatement, Camt053Document, Entry, EntryDetails } from './Camt';
 import type {
   ClosingBalance,
   DebitCredit,
@@ -31,7 +31,7 @@ export class CamtToMt940Converter {
     };
   }
 
-  convert(camtDoc: CAMT053Document): Mt940File {
+  convert(camtDoc: Camt053Document): Mt940File {
     return {
       statements: camtDoc.statements.map((stmt, idx) => this.convertStatement(stmt, idx)),
     };
