@@ -1,5 +1,11 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useAtom } from "jotai";
+import { MdClose } from "react-icons/md";
 import { AppSidebar } from "@/components/base/AppSidebar";
+import { ModeToggle } from "@/components/base/ModeToggle";
+import { ThemeProvider } from "@/components/base/ThemeProvider";
+import { editorsAtom } from "@/components/tabs/atoms";
+import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/_main")({
@@ -7,13 +13,32 @@ export const Route = createFileRoute("/_main")({
 });
 
 function App() {
+  const [editors, setEditors] = useAtom(editorsAtom);
+  const handleClose = () => {
+    setEditors([]);
+  }
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="flex w-full flex-1 flex-col overflow-hidden">
-        <SidebarTrigger />
-        <Outlet />
-      </main>
-    </SidebarProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="flex w-full flex-1 flex-col overflow-hidden">
+          <div className="flex flex-row gap-1 mr-2">
+            <SidebarTrigger />
+            <div className="grow"/>
+            <div className="flex flex-row items-center justify-center">
+              <span className="text-sm text-muted-foreground">{editors.length > 0 ? `${editors[0].name}` : ""}</span>
+            </div>
+            <div className="grow"/>
+            <ModeToggle />
+            {editors.length > 0 && (
+              <Button variant="ghost" onClick={handleClose} title="Close Editor" className="h-7 w-7 p-0">
+                <MdClose />
+              </Button>
+            )}
+          </div>
+          <Outlet />
+        </main>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

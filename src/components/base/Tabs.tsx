@@ -13,9 +13,11 @@ export type Tab = {
 export function Tabs({
   tabs,
   cornerAction,
+  className
 }: {
   tabs: Tab[];
   cornerAction?: ReactNode;
+  className?: string;
 }) {
   const [selected, setSelected] = useState(0);
   useLayoutEffect(() => {
@@ -24,7 +26,7 @@ export function Tabs({
     if (selected >= visibleTabs.length) {
       const newSelected = visibleTabs.length - 1;
       setSelected(newSelected);
-      console.log("run effect on tabs ", newSelected);
+      //console.log("run effect on tabs ", newSelected);
       setSelected(0);
     }
   }, [selected, tabs.filter]);
@@ -32,7 +34,7 @@ export function Tabs({
   const initialDelay = 0.2;
   const delayStep = 0.1;
   return (
-    <div className="flex flex-col h-full">
+    <div className={cn("flex flex-col h-full", className)}>
       <div className="flex gap-4 mb-3 items-center pr-2">
         {tabs
           .filter((t) => t.visible)
@@ -45,7 +47,7 @@ export function Tabs({
               className={cn("whitespace-nowrap overflow-hidden text-ellipsis",
                 "border-b px-4 pb-1 pt-2 min-w-[80px]",
                 "text-center text-sm font-semibold cursor-pointer",
-                selected === i ? "border-black text-black" : "border-b-transparent text-gray-400")}
+                selected === i ? "border-foreground text-foreground" : "border-b-transparent text-gray-400")}
               onClick={() => setSelected(i)}
             >
               {tab.name}
