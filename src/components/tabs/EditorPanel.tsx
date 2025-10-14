@@ -1,27 +1,20 @@
 import { Camt053Document, Camt053ParseResult } from "@/converter/Camt";
 import { Camt053Parser } from "@/converter/CamtParser";
+import { CodeViewer } from "@/converter/CodeViewer";
 import { Mt940File } from "@/converter/Mt940";
 import { CamtToMt940Converter } from "@/converter/Mt940Converter";
 import { Tabs } from "../base/Tabs";
 import { Editor } from "./atoms";
 
-function CodeViewer({ xml }: { xml: string }) {
-  return (
-    <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-200 dark:border-gray-800">
-      {xml}
-    </pre>
-  );
-}
-
 function CamtViewer({ camt }: { camt: Camt053Document }) {
-  return <CodeViewer xml={JSON.stringify(camt, null, 4)} />;
+  return <CodeViewer code={JSON.stringify(camt, null, 4)} />;
 }
 function Mt940Viewer({ mt940 }: { mt940: Mt940File }) {
-  return <CodeViewer xml={JSON.stringify(mt940, null, 4)} />;
+  return <CodeViewer code={JSON.stringify(mt940, null, 4)} />;
 }
 
 export function EditorPanel({ editor }: { editor: Editor }) {
-  const { name, content } = editor;
+  const { content } = editor;
   const parser = new Camt053Parser({
     parseNestedTransactions: true,
     strictMode: false,
@@ -53,7 +46,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
             {
               visible: true,
               name: "CAMT.053",
-              content: <CodeViewer xml={content} />,
+              content: <CodeViewer code={content} />,
             },
             {
               visible: true,
@@ -77,6 +70,11 @@ export function EditorPanel({ editor }: { editor: Editor }) {
                   Error converting to MT940.
                 </div>
               ),
+            },
+            {
+              visible: true,
+              name: "MT940",
+              content: <pre>{mt940Result ? mt940Result.toString() : ""}</pre>,
             },
           ]}
           className="self-stretch"

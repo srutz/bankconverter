@@ -13,7 +13,7 @@ export type Tab = {
 export function Tabs({
   tabs,
   cornerAction,
-  className
+  className,
 }: {
   tabs: Tab[];
   cornerAction?: ReactNode;
@@ -44,10 +44,14 @@ export function Tabs({
               initial="hidden"
               variants={fadeIn(initialDelay + delayStep * i)}
               animate="visible"
-              className={cn("whitespace-nowrap overflow-hidden text-ellipsis",
+              className={cn(
+                "whitespace-nowrap overflow-hidden text-ellipsis",
                 "border-b px-4 pb-1 pt-2 min-w-[80px]",
-                "text-center text-sm font-semibold cursor-pointer",
-                selected === i ? "border-foreground text-foreground" : "border-b-transparent text-gray-400")}
+                "text-center text-xs font-semibold cursor-pointer",
+                selected === i
+                  ? "border-foreground text-foreground"
+                  : "border-b-transparent text-gray-400",
+              )}
               onClick={() => setSelected(i)}
             >
               {tab.name}
