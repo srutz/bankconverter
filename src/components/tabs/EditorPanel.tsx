@@ -3,9 +3,9 @@ import { Camt053Parser } from "@/converter/CamtParser";
 import { Mt940File } from "@/converter/Mt940";
 import { CamtToMt940Converter } from "@/converter/Mt940Converter";
 import { Tabs } from "../base/Tabs";
-import { Editor, editorsAtom } from "./atoms";
+import { Editor } from "./atoms";
 
-function XmlViewer({ xml }: { xml: string }) {
+function CodeViewer({ xml }: { xml: string }) {
   return (
     <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-200 dark:border-gray-800">
       {xml}
@@ -14,18 +14,10 @@ function XmlViewer({ xml }: { xml: string }) {
 }
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
-  return (
-    <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-300">
-      {JSON.stringify(camt, null, 4)}
-    </pre>
-  );
+  return <CodeViewer xml={JSON.stringify(camt, null, 4)} />;
 }
 function Mt940Viewer({ mt940 }: { mt940: Mt940File }) {
-  return (
-    <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-300">
-      {JSON.stringify(mt940, null, 4)}
-    </pre>
-  );
+  return <CodeViewer xml={JSON.stringify(mt940, null, 4)} />;
 }
 
 export function EditorPanel({ editor }: { editor: Editor }) {
@@ -61,7 +53,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
             {
               visible: true,
               name: "CAMT.053",
-              content: <XmlViewer xml={content} />,
+              content: <CodeViewer xml={content} />,
             },
             {
               visible: true,
