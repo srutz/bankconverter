@@ -3,8 +3,9 @@ import {
   Home,
   LucideBookKey,
   Settings,
-  Sheet,
+  Sheet
 } from "lucide-react";
+import { MdPrivacyTip } from "react-icons/md";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +26,7 @@ const items = [
     icon: Home,
   },
   {
-    title: "Help",
+    title: "About",
     url: "/about",
     icon: Settings,
   },
@@ -33,6 +34,11 @@ const items = [
     title: "Imprint / Impressum",
     url: "/imprint",
     icon: Sheet,
+  },
+  {
+    title: "Privacy",
+    url: "/privacy",
+    icon: MdPrivacyTip,
   },
 ];
 

@@ -1,15 +1,13 @@
-import { useSetAtom } from "jotai";
 import { Camt053Document, Camt053ParseResult } from "@/converter/Camt";
 import { Camt053Parser } from "@/converter/CamtParser";
 import { Mt940File } from "@/converter/Mt940";
 import { CamtToMt940Converter } from "@/converter/Mt940Converter";
-import { H3 } from "../base/H3";
 import { Tabs } from "../base/Tabs";
 import { Editor, editorsAtom } from "./atoms";
 
 function XmlViewer({ xml }: { xml: string }) {
   return (
-    <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-200 dark:border-gray-700">
+    <pre className="h-1 grow self-stretch overflow-auto text-xs p-4 rounded-md border border-gray-200 dark:border-gray-800">
       {xml}
     </pre>
   );

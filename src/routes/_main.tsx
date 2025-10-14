@@ -18,7 +18,7 @@ function App() {
     setEditors([]);
   }
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system">
       <SidebarProvider>
         <AppSidebar />
         <main className="flex w-full flex-1 flex-col overflow-hidden">

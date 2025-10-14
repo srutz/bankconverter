@@ -27,7 +27,12 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    () => {
+      if (typeof window === "undefined") return defaultTheme
+      const storedTheme = localStorage.getItem(storageKey) as Theme | null
+      const t = storedTheme || defaultTheme
+      return t;
+    }
   )
 
   useEffect(() => {
@@ -35,6 +40,7 @@ export function ThemeProvider({
 
     root.classList.remove("light", "dark")
 
+    console.log("Applying theme", theme)
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
