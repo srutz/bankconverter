@@ -1,10 +1,8 @@
 import { MdCopyAll } from "react-icons/md";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
+import oneLight from "react-syntax-highlighter/dist/esm/styles/prism/one-light";
 import { toast } from "sonner";
 import { useTheme } from "@/components/base/ThemeProvider";
 import { Button } from "@/components/ui/button";
