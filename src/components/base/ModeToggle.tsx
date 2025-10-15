@@ -1,20 +1,19 @@
+import { Moon, Sun } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { Moon, Sun } from "lucide-react"
-import { useTranslation } from "react-i18next"
- 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTheme } from "./ThemeProvider"
- 
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "./ThemeProvider";
+
 export function ModeToggle() {
-  const { setTheme } = useTheme()
-  const { t } = useTranslation()
- 
+  const { setTheme } = useTheme();
+  const { t } = useTranslation();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,5 +35,5 @@ export function ModeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
