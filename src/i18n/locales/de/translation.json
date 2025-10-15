@@ -7,7 +7,7 @@
   },
   "codeViewer": {
     "copyToClipboard": "In Zwischenablage kopieren",
-    "downloadMt940": "Mt940 herunterladen",
+    "downloadFile": "Datei herunterladen",
     "copySuccess": "Inhalt wurde in die Zwischenablage kopiert",
     "filenameNotProvided": "Dateiname nicht angegeben"
   },

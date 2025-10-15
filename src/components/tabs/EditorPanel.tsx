@@ -1,3 +1,4 @@
+import { useAtomValue } from "jotai";
 import { Camt053Document, Camt053ParseResult } from "@/converter/Camt";
 import { Camt053Parser } from "@/converter/CamtParser";
 import { CodeViewer } from "@/converter/CodeViewer";
@@ -5,7 +6,7 @@ import { Mt940File } from "@/converter/Mt940";
 import { CamtToMt940Converter } from "@/converter/Mt940Converter";
 import { mt940Output } from "@/converter/Mt940Output";
 import { Tabs } from "../base/Tabs";
-import { Editor } from "./atoms";
+import { Editor, settingsAtom } from "./atoms";
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
   return <CodeViewer code={JSON.stringify(camt, null, 4)} />;
@@ -29,6 +30,7 @@ function Mt940OutputViewer({
 }
 
 export function EditorPanel({ editor }: { editor: Editor }) {
+  const settings = useAtomValue(settingsAtom);
   const { content } = editor;
   const parser = new Camt053Parser({
     parseNestedTransactions: true,
@@ -60,6 +62,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
     <div className="grow h-1 flex flex-col items-center">
       <div className="self-stretch grow flex flex-col items-center gap-1 px-2 py-2 relative">
         <Tabs
+          initialSelected={1}
           tabs={[
             {
               visible: true,
@@ -67,7 +70,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
               content: <CodeViewer code={content} />,
             },
             {
-              visible: true,
+              visible: settings.showAdditionalTabs ?? false,
               name: "CAMT.053 (Parsed)",
               content:
                 parseResult?.success && parseResult.data ? (
@@ -79,7 +82,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
                 ),
             },
             {
-              visible: true,
+              visible: settings.showAdditionalTabs ?? false,
               name: "MT940 (Parsed)",
               content: mt940Result ? (
                 <Mt940JsonViewer mt940={mt940Result} />

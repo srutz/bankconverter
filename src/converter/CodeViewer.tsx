@@ -72,7 +72,7 @@ export function CodeViewer({
         {filename && (
           <Button variant="secondary" size="sm" onClick={handleDownload}>
             <MdCopyAll></MdCopyAll>
-            {t("codeViewer.downloadMt940")}
+            {t("codeViewer.downloadFile")}
           </Button>
         )}
       </div>

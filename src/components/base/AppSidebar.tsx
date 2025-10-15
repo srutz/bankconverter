@@ -14,8 +14,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
-export function AppSidebar() {
+export function AppSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
 
   const items = [
@@ -47,7 +48,7 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar>
+    <Sidebar className={cn(className)}>
       <SidebarHeader className="flex flex-row gap-1">
         <LucideBookKey />
         {t("sidebar.title")}

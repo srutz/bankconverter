@@ -14,12 +14,14 @@ export function Tabs({
   tabs,
   cornerAction,
   className,
+  initialSelected = 0,
 }: {
   tabs: Tab[];
   cornerAction?: ReactNode;
   className?: string;
+  initialSelected?: number;
 }) {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(initialSelected ?? 0);
   useLayoutEffect(() => {
     //console.log("run tabs fx")
     const visibleTabs = tabs.filter((t) => t.visible);

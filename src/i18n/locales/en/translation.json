@@ -7,7 +7,7 @@
   },
   "codeViewer": {
     "copyToClipboard": "Copy to Clipboard",
-    "downloadMt940": "Download Mt940",
+    "downloadFile": "Download File",
     "copySuccess": "Content has been copied to clipboard",
     "filenameNotProvided": "Filename is not provided"
   },
