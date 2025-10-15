@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, LucideBookKey, Settings, Sheet } from "lucide-react";
+import { Home, Info, LucideBookKey, Settings, Sheet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { MdPrivacyTip } from "react-icons/md";
 import {
@@ -25,11 +25,6 @@ export function AppSidebar() {
       icon: Home,
     },
     {
-      title: t("sidebar.navigation.about"),
-      url: "/about",
-      icon: Settings,
-    },
-    {
       title: t("sidebar.navigation.imprint"),
       url: "/imprint",
       icon: Sheet,
@@ -38,6 +33,16 @@ export function AppSidebar() {
       title: t("sidebar.navigation.privacy"),
       url: "/privacy",
       icon: MdPrivacyTip,
+    },
+    {
+      title: t("sidebar.navigation.about"),
+      url: "/about",
+      icon: Info,
+    },
+    {
+      title: t("sidebar.navigation.settings"),
+      url: "/settings",
+      icon: Settings,
     },
   ];
 

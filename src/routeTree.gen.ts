@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainRouteImport } from './routes/_main'
 import { Route as MainIndexRouteImport } from './routes/_main/index'
+import { Route as MainSettingsRouteImport } from './routes/_main/settings'
 import { Route as MainPrivacyRouteImport } from './routes/_main/privacy'
 import { Route as MainImprintRouteImport } from './routes/_main/imprint'
 import { Route as MainAboutRouteImport } from './routes/_main/about'
@@ -22,6 +23,11 @@ const MainRoute = MainRouteImport.update({
 const MainIndexRoute = MainIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainSettingsRoute = MainSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => MainRoute,
 } as any)
 const MainPrivacyRoute = MainPrivacyRouteImport.update({
@@ -44,12 +50,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof MainAboutRoute
   '/imprint': typeof MainImprintRoute
   '/privacy': typeof MainPrivacyRoute
+  '/settings': typeof MainSettingsRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof MainAboutRoute
   '/imprint': typeof MainImprintRoute
   '/privacy': typeof MainPrivacyRoute
+  '/settings': typeof MainSettingsRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesById {
@@ -58,19 +66,21 @@ export interface FileRoutesById {
   '/_main/about': typeof MainAboutRoute
   '/_main/imprint': typeof MainImprintRoute
   '/_main/privacy': typeof MainPrivacyRoute
+  '/_main/settings': typeof MainSettingsRoute
   '/_main/': typeof MainIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/imprint' | '/privacy' | '/'
+  fullPaths: '/about' | '/imprint' | '/privacy' | '/settings' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/imprint' | '/privacy' | '/'
+  to: '/about' | '/imprint' | '/privacy' | '/settings' | '/'
   id:
     | '__root__'
     | '/_main'
     | '/_main/about'
     | '/_main/imprint'
     | '/_main/privacy'
+    | '/_main/settings'
     | '/_main/'
   fileRoutesById: FileRoutesById
 }
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof MainIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/settings': {
+      id: '/_main/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof MainSettingsRouteImport
       parentRoute: typeof MainRoute
     }
     '/_main/privacy': {
@@ -122,6 +139,7 @@ interface MainRouteChildren {
   MainAboutRoute: typeof MainAboutRoute
   MainImprintRoute: typeof MainImprintRoute
   MainPrivacyRoute: typeof MainPrivacyRoute
+  MainSettingsRoute: typeof MainSettingsRoute
   MainIndexRoute: typeof MainIndexRoute
 }
 
@@ -129,6 +147,7 @@ const MainRouteChildren: MainRouteChildren = {
   MainAboutRoute: MainAboutRoute,
   MainImprintRoute: MainImprintRoute,
   MainPrivacyRoute: MainPrivacyRoute,
+  MainSettingsRoute: MainSettingsRoute,
   MainIndexRoute: MainIndexRoute,
 }
 
