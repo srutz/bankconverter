@@ -9,7 +9,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 //import "@fontsource/lato";
-import '@fontsource-variable/geist';
+import "@fontsource-variable/geist";
 interface MyRouterContext {
   queryClient: QueryClient;
 }

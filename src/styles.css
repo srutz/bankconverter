@@ -6,7 +6,8 @@
 
 body {
   @apply m-0;
-  font-family: 'Geist', 'Lato', system-ui,
+  font-family:
+    "Geist", "Lato", system-ui,
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -135,4 +136,8 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+button {
+  cursor: pointer;
 }

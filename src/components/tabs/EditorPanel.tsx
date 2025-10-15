@@ -3,14 +3,29 @@ import { Camt053Parser } from "@/converter/CamtParser";
 import { CodeViewer } from "@/converter/CodeViewer";
 import { Mt940File } from "@/converter/Mt940";
 import { CamtToMt940Converter } from "@/converter/Mt940Converter";
+import { mt940Output } from "@/converter/Mt940Output";
 import { Tabs } from "../base/Tabs";
 import { Editor } from "./atoms";
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
   return <CodeViewer code={JSON.stringify(camt, null, 4)} />;
 }
-function Mt940Viewer({ mt940 }: { mt940: Mt940File }) {
+function Mt940JsonViewer({ mt940 }: { mt940: Mt940File }) {
   return <CodeViewer code={JSON.stringify(mt940, null, 4)} />;
+}
+function Mt940OutputViewer({
+  mt940,
+  filename,
+}: {
+  mt940: Mt940File | null;
+  filename: string;
+}) {
+  return (
+    <CodeViewer
+      code={mt940 ? mt940Output({ mt940 }) : ""}
+      filename={filename}
+    />
+  );
 }
 
 export function EditorPanel({ editor }: { editor: Editor }) {
@@ -38,6 +53,9 @@ export function EditorPanel({ editor }: { editor: Editor }) {
       console.error("Error parsing CAMT.053 file:", error);
     }
   }
+  const mt940filename = editor.filename
+    ? editor.filename.replace(/\.camt053\.xml$/i, ".mt940.txt")
+    : "output.mt940.txt";
   return (
     <div className="grow h-1 flex flex-col items-center">
       <div className="self-stretch grow flex flex-col items-center gap-1 px-2 py-2 relative">
@@ -64,7 +82,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
               visible: true,
               name: "MT940 (Parsed)",
               content: mt940Result ? (
-                <Mt940Viewer mt940={mt940Result} />
+                <Mt940JsonViewer mt940={mt940Result} />
               ) : (
                 <div className="p-4 text-red-500">
                   Error converting to MT940.
@@ -74,7 +92,12 @@ export function EditorPanel({ editor }: { editor: Editor }) {
             {
               visible: true,
               name: "MT940",
-              content: <pre>{mt940Result ? mt940Result.toString() : ""}</pre>,
+              content: (
+                <Mt940OutputViewer
+                  mt940={mt940Result}
+                  filename={mt940filename}
+                />
+              ),
             },
           ]}
           className="self-stretch"

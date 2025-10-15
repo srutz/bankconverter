@@ -9,10 +9,9 @@ export const Route = createFileRoute("/_main/privacy")({
 
 function RouteComponent() {
   return (
-      <Page>
-        <H2>About CAMT Converter</H2>
-        <PrivacyPanel></PrivacyPanel>
-      </Page>
+    <Page>
+      <H2>About CAMT Converter</H2>
+      <PrivacyPanel></PrivacyPanel>
+    </Page>
   );
-  
 }
