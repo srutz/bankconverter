@@ -1,4 +1,34 @@
 {
   "title": "Bankconverter",
-  "description": "Convert from CAMT TO MT940"
+  "description": "Convert from CAMT TO MT940",
+  "upload": {
+    "title": "Bankconverter",
+    "instructions": "Upload your CAMT file"
+  },
+  "codeViewer": {
+    "copyToClipboard": "Copy to Clipboard",
+    "downloadMt940": "Download Mt940",
+    "copySuccess": "Content has been copied to clipboard",
+    "filenameNotProvided": "Filename is not provided"
+  },
+  "theme": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "sidebar": {
+    "title": "Bankconverter",
+    "menu": "Menu",
+    "navigation": {
+      "home": "Home",
+      "about": "About",
+      "imprint": "Imprint / Impressum",
+      "privacy": "Privacy"
+    },
+    "footer": {
+      "author": "by stepan.rutz AT stepanrutz.com",
+      "disclaimer": "Use at your own risk. No warranty."
+    }
+  }
 }

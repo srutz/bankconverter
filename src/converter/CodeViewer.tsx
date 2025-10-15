@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MdCopyAll } from "react-icons/md";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
@@ -16,6 +17,7 @@ export function CodeViewer({
   code: string;
   filename?: string;
 }) {
+  const { t } = useTranslation();
   const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const { theme } = useTheme();
   const baseStyle =
@@ -38,14 +40,14 @@ export function CodeViewer({
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(code);
-    toast("Content has been copied to clipboard", {
+    toast(t("codeViewer.copySuccess"), {
       dismissible: true,
       duration: 3_500,
     });
   };
   const handleDownload = () => {
     if (!filename) {
-      console.error("Filename is not provided");
+      console.error(t("codeViewer.filenameNotProvided"));
       return;
     }
     const element = document.createElement("a");
@@ -65,12 +67,12 @@ export function CodeViewer({
       <div className="flex flex-row gap-2">
         <Button variant="secondary" size="sm" onClick={handleCopyToClipboard}>
           <MdCopyAll></MdCopyAll>
-          Copy to Clipboard
+          {t("codeViewer.copyToClipboard")}
         </Button>
         {filename && (
           <Button variant="secondary" size="sm" onClick={handleDownload}>
             <MdCopyAll></MdCopyAll>
-            Download Mt940
+            {t("codeViewer.downloadMt940")}
           </Button>
         )}
       </div>

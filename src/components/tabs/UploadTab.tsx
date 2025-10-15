@@ -33,12 +33,14 @@ export function UploadTab() {
           onDrop={handleDrop}
           className="self-stretch grow flex flex-col items-center px-8 py-8"
         >
-          <H2>{t("title")}</H2>
+          <H2>{t("upload.title")}</H2>
           <div className="flex flex-col items-center">
             <div className="grow flex flow-col items-center justify-center">
               <LucideUpload className="mt-4 h-16 w-16 text-muted-foreground" />
             </div>
-            <p className="mt-4 text-muted-foreground">Upload your CAMT file</p>
+            <p className="mt-4 text-muted-foreground">
+              {t("upload.instructions")}
+            </p>
           </div>
         </Dropzone>
       </Block>
