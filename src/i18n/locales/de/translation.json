@@ -1,0 +1,44 @@
+{
+  "title": "Bankconverter",
+  "description": "Konvertierung von CAMT zu MT940",
+  "upload": {
+    "title": "Bankconverter",
+    "instructions": "Laden Sie Ihre CAMT-Datei hoch"
+  },
+  "codeViewer": {
+    "copyToClipboard": "In Zwischenablage kopieren",
+    "downloadMt940": "Mt940 herunterladen",
+    "copySuccess": "Inhalt wurde in die Zwischenablage kopiert",
+    "filenameNotProvided": "Dateiname nicht angegeben"
+  },
+  "theme": {
+    "toggleTheme": "Theme wechseln",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "sidebar": {
+    "title": "Bankconverter",
+    "menu": "Menü",
+    "navigation": {
+      "home": "Start",
+      "settings": "Einstellungen",
+      "about": "Über",
+      "imprint": "Impressum",
+      "privacy": "Datenschutz"
+    },
+    "footer": {
+      "author": "von stepan.rutz AT stepanrutz.com",
+      "disclaimer": "Verwendung auf eigene Gefahr. Keine Gewährleistung."
+    }
+  },
+  "settings": {
+    "title": "Bankconverter Einstellungen",
+    "description": "Konfigurieren Sie Ihre Einstellungen und Anwendungsoptionen",
+    "additionalTabs": "Zusätzliche Info-Tabs aktivieren",
+    "language": "Benutzeroberflächen-Sprache",
+    "languagePlaceholder": "Sprache",
+    "confirm": "Bestätigen",
+    "saveSuccess": "Einstellungen erfolgreich gespeichert"
+  }
+}

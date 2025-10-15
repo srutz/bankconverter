@@ -31,5 +31,14 @@
       "author": "by stepan.rutz AT stepanrutz.com",
       "disclaimer": "Use at your own risk. No warranty."
     }
+  },
+  "settings": {
+    "title": "Bankconverter Settings",
+    "description": "Configure your preferences and application settings",
+    "additionalTabs": "Enable additional info-tabs",
+    "language": "User-Interface language",
+    "languagePlaceholder": "Language",
+    "confirm": "Confirm",
+    "saveSuccess": "Settings saved successfully"
   }
 }

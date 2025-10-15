@@ -1,4 +1,6 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import i18n from "@/i18n/config";
 
 export type Editor = {
   name: string;
@@ -15,7 +17,29 @@ export type Settings = {
   language?: Language;
 };
 
-export const settingsAtom = atom<Settings>({
-  showAdditionalTabs: false,
-  language: "en",
+// Use atomWithStorage to persist settings in localStorage
+export const settingsAtom = atomWithStorage<Settings>(
+  "bankconverter-settings",
+  {
+    showAdditionalTabs: false,
+    language: "en",
+  },
+);
+
+// Derived atom to handle language changes
+export const languageAtom = atom(
+  (get) => get(settingsAtom).language || "en",
+  (get, set, newLanguage: Language) => {
+    const currentSettings = get(settingsAtom);
+    set(settingsAtom, { ...currentSettings, language: newLanguage });
+    // Update i18n language
+    i18n.changeLanguage(newLanguage);
+  },
+);
+
+// Initialize language from settings on app start
+export const initializeLanguageAtom = atom(null, (get, _set) => {
+  const settings = get(settingsAtom);
+  const language = settings.language || "en";
+  i18n.changeLanguage(language);
 });
