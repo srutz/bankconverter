@@ -27,7 +27,7 @@ export function makeDtAusFilenameFromCamtFilename(
   if (match) {
     const datePart = match[1];
     const timePart = match[2];
-    return `dtaus_${datePart}_${timePart}.txt`;
+    return `mt940_${datePart}_${timePart}.txt`;
   }
-  return "dt_aus_output.txt";
+  return "mt940_output.txt";
 }
