@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
 import { useAtom } from "jotai";
 import { LucideUpload } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Block } from "../base/Block";
 import { Dropzone } from "../base/Dropzone";
 import { H2 } from "../base/H2";
+import { Button } from "../ui/button";
 import { editorsAtom } from "./atoms";
 
 export function UploadTab() {
@@ -44,6 +46,14 @@ export function UploadTab() {
           </div>
         </Dropzone>
       </Block>
+      <div className="flex flex-col items-center">
+        <Button
+          variant="link"
+          onClick={() => window!.open("/data/Camt053.xml", "_blank")}
+        >
+          {t("upload.openExample")}
+        </Button>
+      </div>
     </div>
   );
 }

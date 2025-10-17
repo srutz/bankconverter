@@ -99,7 +99,9 @@ export class CamtToMt940Converter {
       if (entry.entryDetails && entry.entryDetails.length > 0) {
         // Convert each entry detail as a separate transaction
         for (const detail of entry.entryDetails) {
-          lines.push(this.convertEntryDetail(entry, detail));
+          lines.push(
+            this.convertEntryDetail(entry, detail, entry.entryDetails.length),
+          );
         }
       } else {
         // No details, convert the entry itself
@@ -139,39 +141,36 @@ export class CamtToMt940Converter {
   private convertEntryDetail(
     entry: Entry,
     detail: EntryDetails,
+    detailsCount: number,
+    s,
   ): StatementLine {
     const line: StatementLine = {
       tag: "61",
       valueDate: entry.valueDate || entry.bookingDate || new Date(),
       entryDate: entry.bookingDate,
       debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
-      amount: entry.amount.value,
+      amount: detailsCount === 1 ? entry.amount.value : detail.amount.value,
       bankReference:
         detail.accountServicerReference || entry.accountServicerReference,
     };
-
     if (detail.bankTransactionCode) {
       line.transactionType = this.mapBankTransactionCode(
         detail.bankTransactionCode,
       );
     }
-
     // Build tag 86 information
     const info: TransactionInformation = {
       tag: "86",
     };
-
     if (detail.bankTransactionCode) {
       info.transactionCode = detail.bankTransactionCode.proprietary;
     }
-
     if (detail.relatedParties) {
       if (detail.relatedParties.creditor?.name) {
         info.name = detail.relatedParties.creditor.name;
       } else if (detail.relatedParties.debtor?.name) {
         info.name = detail.relatedParties.debtor.name;
       }
-
       if (detail.relatedParties.creditorAccount?.iban) {
         info.accountNumber = detail.relatedParties.creditorAccount.iban;
       } else if (detail.relatedParties.debtorAccount?.iban) {

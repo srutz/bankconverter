@@ -3,7 +3,8 @@
   "description": "Konvertierung von CAMT zu MT940",
   "upload": {
     "title": "Bankconverter",
-    "instructions": "CAMT zu Mt940 ... Laden Sie Ihre CAMT-Datei hoch"
+    "instructions": "CAMT zu Mt940 ... Laden Sie Ihre CAMT-Datei hoch",
+    "openExample": "Beispiel Camt053.xml öffnen"
   },
   "codeViewer": {
     "copyToClipboard": "In Zwischenablage kopieren",
@@ -56,6 +57,7 @@
     "openingBalance": "Anfangssaldo",
     "closingBalance": "Endsaldo",
     "transactions": "Transaktionen",
+    "sum": "Differenz",
     "date": "Datum",
     "type": "Typ",
     "reference": "Referenz",

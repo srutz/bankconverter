@@ -102,6 +102,14 @@ export function Mt940Table({
           )}
         />
         <InfoField
+          name={t("mt940Table.sum")}
+          value={formatAmount(
+            lastClosingBalance.amount - firstOpeningBalance.amount,
+            language,
+            lastClosingBalance.currency,
+          )}
+        />
+        <InfoField
           name={t("mt940Table.totalTransactions")}
           value={allTransactions.length}
         />

@@ -15,6 +15,7 @@ interface MyRouterContext {
   queryClient: QueryClient;
 }
 
+const WANT_DEVTOOLS = false;
 const development = import.meta.env.DEV;
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -51,7 +52,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        {development && (
+        {development && WANT_DEVTOOLS && (
           <TanStackDevtools
             config={{
               position: "bottom-right",
