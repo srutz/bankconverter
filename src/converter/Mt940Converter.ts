@@ -121,7 +121,8 @@ export class CamtToMt940Converter {
       valueDate: entry.valueDate || entry.bookingDate || new Date(),
       entryDate: entry.bookingDate,
       debitCredit: this.convertDebitCredit(detail.creditDebitIndicator),
-      amount: detail.amount.value,
+      //amount: detail.amount.value,
+      amount: entry.amount.value,
       bankReference: detail.accountServicerReference || entry.accountServicerReference,
     };
 
@@ -241,6 +242,7 @@ export class CamtToMt940Converter {
     other?: { identification?: string };
     name?: string;
   }): string {
+    console.log("Extracting account number from account info:", account);
     if (account.iban) return account.iban;
     if (account.other?.identification) return account.other.identification;
     if (account.name) return account.name;

@@ -117,7 +117,13 @@ export function EditorPanel({ editor }: { editor: Editor }) {
     {
       visible: true,
       name: "MT940 Lines",
-      content: <Mt940Table mt940={mt940Result} />,
+      content: (
+        <Mt940Table
+          mt940={mt940Result}
+          code={content}
+          filename={mt940filename}
+        />
+      ),
     },
     {
       visible: true,

@@ -1,0 +1,14 @@
+export function InfoField({
+  name,
+  value,
+}: {
+  name: string;
+  value: string | number;
+}) {
+  return (
+    <div className="flex flex-col py-1 px-2">
+      <span className="text-sm text-muted-foreground">{name}</span>
+      <span className="font-semibold text-sm">{value}</span>
+    </div>
+  );
+}

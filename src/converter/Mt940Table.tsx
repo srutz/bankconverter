@@ -1,5 +1,8 @@
 import { useAtomValue } from "jotai";
+import { MdCopyAll, MdDownload } from "react-icons/md";
+import { InfoField } from "@/components/base/InfoField";
 import { languageAtom } from "@/components/tabs/atoms";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Mt940File, StatementLine } from "./Mt940";
+import { ViewerButtonsBar } from "./ViewerButtonBar";
 
 function formatAmount(
   amount: number,
@@ -30,7 +34,15 @@ function formatDate(date: Date, language: string): string {
   });
 }
 
-export function Mt940Table({ mt940 }: { mt940: Mt940File | null }) {
+export function Mt940Table({
+  mt940,
+  code,
+  filename,
+}: {
+  mt940: Mt940File | null;
+  code: string;
+  filename?: string;
+}) {
   const language = useAtomValue(languageAtom);
   if (!mt940 || !mt940.statements || mt940.statements.length === 0) {
     return null;
@@ -51,67 +63,101 @@ export function Mt940Table({ mt940 }: { mt940: Mt940File | null }) {
       </div>
     );
   }
+  const statementNumbers = mt940.statements.map(
+    (s) => s.statementNumber.statementNumber,
+  );
+  const accountNumbers = mt940.statements.map(
+    (s) => s.accountIdentification.accountNumber,
+  );
+  const firstOpeningBalance = mt940.statements[0].openingBalance;
+  const lastClosingBalance =
+    mt940.statements[mt940.statements.length - 1].closingBalance;
 
   return (
-    <Table>
-      <TableCaption>MT940 Bank Statement Transactions</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Date</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Reference</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {allTransactions.map((transaction, index) => {
-          const statement = mt940.statements[transaction.statementIndex];
-          const currency = statement.openingBalance.currency;
-          const isDebit =
-            transaction.debitCredit === "D" || transaction.debitCredit === "RD";
-          const amount = isDebit ? -transaction.amount : transaction.amount;
+    <div className="h-1 grow flex flex-col">
+      <ViewerButtonsBar filename={filename} code={code}></ViewerButtonsBar>
+      <div className="my-4 grid grid-cols-3">
+        <InfoField name="Statement No" value={statementNumbers.join(", ")} />
+        <InfoField name="Account" value={accountNumbers.join(",")} />
+        <InfoField name="Total Transactions" value={allTransactions.length} />
+        <InfoField
+          name="Opening Balance"
+          value={formatAmount(
+            firstOpeningBalance.amount,
+            language,
+            firstOpeningBalance.currency,
+          )}
+        />
+        <InfoField
+          name="Closing Balance"
+          value={formatAmount(
+            lastClosingBalance.amount,
+            language,
+            lastClosingBalance.currency,
+          )}
+        />
+      </div>
+      <Table>
+        <TableCaption>Transactions</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Reference</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {allTransactions.map((transaction, index) => {
+            const statement = mt940.statements[transaction.statementIndex];
+            const currency = statement.openingBalance.currency;
+            const isDebit =
+              transaction.debitCredit === "D" ||
+              transaction.debitCredit === "RD";
+            const amount = isDebit ? -transaction.amount : transaction.amount;
 
-          return (
-            <TableRow key={`${transaction.statementIndex}-${index}`}>
-              <TableCell className="font-medium">
-                {formatDate(transaction.valueDate, language)}
-              </TableCell>
-              <TableCell>
-                <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            return (
+              <TableRow key={`${transaction.statementIndex}-${index}`}>
+                <TableCell className="font-medium">
+                  {formatDate(transaction.valueDate, language)}
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      isDebit
+                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    }`}
+                  >
+                    {transaction.debitCredit}
+                  </span>
+                </TableCell>
+                <TableCell className="text-sm">
+                  {transaction.customerReference ||
+                    transaction.bankReference ||
+                    "-"}
+                </TableCell>
+                <TableCell className="max-w-[60%] break-words whitespace-normal">
+                  {transaction.information?.description ||
+                    transaction.information?.details ||
+                    transaction.supplementaryDetails ||
+                    "-"}
+                </TableCell>
+                <TableCell
+                  className={`text-right font-medium ${
                     isDebit
-                      ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                      : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-green-600 dark:text-green-400"
                   }`}
                 >
-                  {transaction.debitCredit}
-                </span>
-              </TableCell>
-              <TableCell className="font-mono text-sm">
-                {transaction.customerReference ||
-                  transaction.bankReference ||
-                  "-"}
-              </TableCell>
-              <TableCell className="max-w-[300px] text-wrap">
-                {transaction.information?.description ||
-                  transaction.information?.details ||
-                  transaction.supplementaryDetails ||
-                  "No description"}
-              </TableCell>
-              <TableCell
-                className={`text-right font-medium ${
-                  isDebit
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-green-600 dark:text-green-400"
-                }`}
-              >
-                {formatAmount(amount, language, currency)}
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                  {formatAmount(amount, language, currency)}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
