@@ -8,6 +8,7 @@
   "codeViewer": {
     "copyToClipboard": "In Zwischenablage kopieren",
     "downloadFile": "Datei herunterladen",
+    "closeViewer": "Schließen",
     "copySuccess": "Inhalt wurde in die Zwischenablage kopiert",
     "filenameNotProvided": "Dateiname nicht angegeben"
   },

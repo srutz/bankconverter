@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 import { MdClose, MdCopyAll, MdDownload } from "react-icons/md";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useTheme } from "@/components/base/ThemeProvider";
 import { editorsAtom } from "@/components/tabs/atoms";
 import { Button } from "@/components/ui/button";
+import { makeDtAusFilenameFromCamtFilename } from "@/lib/fileutil";
 
 SyntaxHighlighter.registerLanguage("jsx", jsx);
 
@@ -56,7 +57,7 @@ export function CodeViewer({
     const element = document.createElement("a");
     const file = new Blob([code], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
-    element.download = filename;
+    element.download = makeDtAusFilenameFromCamtFilename(filename);
     document.body.appendChild(element);
     element.click();
   };
@@ -78,7 +79,7 @@ export function CodeViewer({
               {t("codeViewer.downloadFile")}
             </Button>
             <div className="grow"></div>
-            <Button variant="destructive" size="sm" onClick={handleClose}>
+            <Button variant="outline" size="sm" onClick={handleClose}>
               <MdClose />
               {t("codeViewer.closeViewer")}
             </Button>

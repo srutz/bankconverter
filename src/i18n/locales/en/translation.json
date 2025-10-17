@@ -8,6 +8,7 @@
   "codeViewer": {
     "copyToClipboard": "Copy to Clipboard",
     "downloadFile": "Download File",
+    "closeViewer": "Close Viewer",
     "copySuccess": "Content has been copied to clipboard",
     "filenameNotProvided": "Filename is not provided"
   },

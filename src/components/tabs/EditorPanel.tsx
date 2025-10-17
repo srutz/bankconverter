@@ -5,6 +5,7 @@ import { CodeViewer } from "@/converter/CodeViewer";
 import { convertToMt940 } from "@/converter/camtutil";
 import { Mt940File } from "@/converter/Mt940";
 import { mt940Output } from "@/converter/Mt940Output";
+import { makeDtAusFilenameFromCamtFilename } from "@/lib/fileutil";
 import { Tabs } from "../base/Tabs";
 import { autoDownloadedFilesAtom, Editor, settingsAtom } from "./atoms";
 
@@ -34,7 +35,7 @@ const downloadFile = (content: string, filename: string) => {
   const element = document.createElement("a");
   const file = new Blob([content], { type: "text/plain" });
   element.href = URL.createObjectURL(file);
-  element.download = filename;
+  element.download = makeDtAusFilenameFromCamtFilename(filename);
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);

@@ -3,6 +3,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { AppSidebar } from "@/components/base/AppSidebar";
+import { LanguageToggle } from "@/components/base/LanguageToggle";
 import { ModeToggle } from "@/components/base/ModeToggle";
 import { ThemeProvider } from "@/components/base/ThemeProvider";
 import { editorsAtom, settingsAtom } from "@/components/tabs/atoms";
@@ -54,6 +55,7 @@ function App() {
               </span>
             </div>
             <div className="grow" />
+            <LanguageToggle />
             <ModeToggle />
             {editors.length > 0 && (
               <Button

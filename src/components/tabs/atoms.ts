@@ -24,7 +24,7 @@ export const settingsAtom = atomWithStorage<Settings>(
   {
     showAdditionalTabs: false,
     autoDownload: true,
-    language: "en",
+    language: "de",
   },
 );
 
