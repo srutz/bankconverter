@@ -1,11 +1,13 @@
+import { useAtom, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
-import { MdCopyAll, MdDownload } from "react-icons/md";
+import { MdClose, MdCopyAll, MdDownload } from "react-icons/md";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
 import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
 import oneLight from "react-syntax-highlighter/dist/esm/styles/prism/one-light";
 import { toast } from "sonner";
 import { useTheme } from "@/components/base/ThemeProvider";
+import { editorsAtom } from "@/components/tabs/atoms";
 import { Button } from "@/components/ui/button";
 
 SyntaxHighlighter.registerLanguage("jsx", jsx);
@@ -18,6 +20,7 @@ export function CodeViewer({
   filename?: string;
 }) {
   const { t } = useTranslation();
+  const [_, setEditors] = useAtom(editorsAtom);
   const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const { theme } = useTheme();
   const baseStyle =
@@ -57,6 +60,9 @@ export function CodeViewer({
     document.body.appendChild(element);
     element.click();
   };
+  const handleClose = () => {
+    setEditors([]);
+  };
 
   return (
     <div className="h-1 grow flex flex-col gap-2 items-stretch overflow-hidden">
@@ -66,10 +72,17 @@ export function CodeViewer({
           {t("codeViewer.copyToClipboard")}
         </Button>
         {filename && (
-          <Button variant="secondary" size="sm" onClick={handleDownload}>
-            <MdDownload></MdDownload>
-            {t("codeViewer.downloadFile")}
-          </Button>
+          <>
+            <Button variant="secondary" size="sm" onClick={handleDownload}>
+              <MdDownload></MdDownload>
+              {t("codeViewer.downloadFile")}
+            </Button>
+            <div className="grow"></div>
+            <Button variant="destructive" size="sm" onClick={handleClose}>
+              <MdClose />
+              {t("codeViewer.closeViewer")}
+            </Button>
+          </>
         )}
       </div>
       <SyntaxHighlighter language="javascript" style={customStyle}>

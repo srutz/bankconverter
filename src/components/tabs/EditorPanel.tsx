@@ -1,12 +1,12 @@
-import { useAtomValue } from "jotai";
-import { useEffect, useMemo, useRef } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useMemo } from "react";
 import { Camt053Document } from "@/converter/Camt";
 import { CodeViewer } from "@/converter/CodeViewer";
 import { convertToMt940 } from "@/converter/camtutil";
 import { Mt940File } from "@/converter/Mt940";
 import { mt940Output } from "@/converter/Mt940Output";
 import { Tabs } from "../base/Tabs";
-import { Editor, settingsAtom } from "./atoms";
+import { autoDownloadedFilesAtom, Editor, settingsAtom } from "./atoms";
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
   return <CodeViewer code={JSON.stringify(camt, null, 4)} />;
@@ -29,8 +29,21 @@ function Mt940OutputViewer({
   );
 }
 
+// Utility function to trigger download
+const downloadFile = (content: string, filename: string) => {
+  const element = document.createElement("a");
+  const file = new Blob([content], { type: "text/plain" });
+  element.href = URL.createObjectURL(file);
+  element.download = filename;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+  URL.revokeObjectURL(element.href);
+};
+
 export function EditorPanel({ editor }: { editor: Editor }) {
   const settings = useAtomValue(settingsAtom);
+  const [autoDownloadedFiles, setAutoDownloadedFiles] = useAtom(autoDownloadedFilesAtom);
   const { content } = editor;
   const mt940filename = editor.filename
     ? editor.filename.replace(/\.camt053\.xml$/i, ".mt940.txt")
@@ -38,6 +51,32 @@ export function EditorPanel({ editor }: { editor: Editor }) {
 
   const conversion = useMemo(() => convertToMt940(content), [content]);
   const { parseResult, mt940Result } = conversion;
+
+  // Auto-download effect
+  useEffect(() => {
+    // Only proceed if auto-download is enabled and we have a successful conversion
+    if (!settings.autoDownload || !mt940Result || !editor.filename) {
+      return;
+    }
+
+    // Create a unique key for this file content to track if it's been downloaded
+    const fileKey = `${editor.filename}-${content.length}-${content.slice(0, 100)}`;
+    
+    // Check if this specific file has already been auto-downloaded
+    if (autoDownloadedFiles.has(fileKey)) {
+      return;
+    }
+
+    // Generate MT940 output and download it
+    const mt940Content = mt940Output({ mt940: mt940Result });
+    if (mt940Content) {
+      downloadFile(mt940Content, mt940filename);
+      
+      // Mark this file as downloaded
+      setAutoDownloadedFiles(prev => new Set([...prev, fileKey]));
+    }
+  }, [settings.autoDownload, mt940Result, editor.filename, content, mt940filename, autoDownloadedFiles, setAutoDownloadedFiles]);
+
   return (
     <div className="grow h-1 flex flex-col items-center">
       <div className="self-stretch grow flex flex-col items-center gap-1 px-2 py-2 relative">

@@ -45,3 +45,6 @@ export const initializeLanguageAtom = atom(null, (get, _set) => {
   const language = settings.language || "en";
   i18n.changeLanguage(language);
 });
+
+// Track which files have been auto-downloaded to prevent multiple downloads
+export const autoDownloadedFilesAtom = atom<Set<string>>(new Set<string>());
