@@ -85,7 +85,7 @@ function RouteComponent() {
             <Label htmlFor={checkboxId}>{t("settings.additionalTabs")}</Label>
           </div>
           <div className="flex gap-2 items-center">
-            <Label>{t("settings.language")}</Label>
+            <Label className="font-semibold">{t("settings.language")}</Label>
             <ComboBox
               options={languages}
               hideInput={true}
