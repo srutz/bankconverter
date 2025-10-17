@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useMemo } from "react";
+import { MdClose } from "react-icons/md";
 import { Camt053Document } from "@/converter/Camt";
 import { CodeViewer } from "@/converter/CodeViewer";
 import { convertToMt940 } from "@/converter/camtutil";
@@ -8,7 +9,13 @@ import { mt940Output } from "@/converter/Mt940Output";
 import { Mt940Table } from "@/converter/Mt940Table";
 import { makeDtAusFilenameFromCamtFilename } from "@/lib/fileutil";
 import { Tab, Tabs } from "../base/Tabs";
-import { autoDownloadedFilesAtom, Editor, settingsAtom } from "./atoms";
+import { Button } from "../ui/button";
+import {
+  autoDownloadedFilesAtom,
+  Editor,
+  editorsAtom,
+  settingsAtom,
+} from "./atoms";
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
   return <CodeViewer code={JSON.stringify(camt, null, 4)} />;
@@ -45,6 +52,7 @@ const downloadFile = (content: string, filename: string) => {
 
 export function EditorPanel({ editor }: { editor: Editor }) {
   const settings = useAtomValue(settingsAtom);
+  const [, setEditors] = useAtom(editorsAtom);
   const [autoDownloadedFiles, setAutoDownloadedFiles] = useAtom(
     autoDownloadedFilesAtom,
   );
@@ -115,8 +123,15 @@ export function EditorPanel({ editor }: { editor: Editor }) {
       ),
     },
     {
+      visible: settings.showAdditionalTabs ?? false,
+      name: "MT940 (Raw)",
+      content: (
+        <Mt940OutputViewer mt940={mt940Result} filename={mt940filename} />
+      ),
+    },
+    {
       visible: true,
-      name: "MT940 Lines",
+      name: "MT940",
       content: (
         <Mt940Table
           mt940={mt940Result}
@@ -125,16 +140,27 @@ export function EditorPanel({ editor }: { editor: Editor }) {
         />
       ),
     },
-    {
-      visible: true,
-      name: "MT940",
-      content: (
-        <Mt940OutputViewer mt940={mt940Result} filename={mt940filename} />
-      ),
-    },
   ];
   const visibleTabs = tabs.filter((tab) => tab.visible);
   const initialSelected = visibleTabs.length > 0 ? visibleTabs.length - 1 : 0;
+
+  if (!mt940Result || !parseResult) {
+    return (
+      <div className="grow h-1 flex flex-col items-center">
+        <div className="self-stretch grow flex flex-col items-center gap-1 px-2 py-2">
+          <div className="text-center text-gray-500 py-4">
+            No valid CAMT.053 content to display.
+          </div>
+          <div>
+            <Button className="" size="sm" onClick={() => setEditors([])}>
+              <MdClose></MdClose>
+              Close
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grow h-1 flex flex-col items-center">

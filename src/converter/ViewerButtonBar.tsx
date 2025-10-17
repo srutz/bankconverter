@@ -51,7 +51,12 @@ export function ViewerButtonsBar({
             {t("codeViewer.downloadFile")}
           </Button>
           <div className="grow"></div>
-          <Button variant="outline" size="sm" onClick={handleClose}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleClose}
+            title={t("codeViewer.closeViewer")}
+          >
             <MdClose />
             {t("codeViewer.closeViewer")}
           </Button>

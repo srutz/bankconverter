@@ -47,5 +47,19 @@
     "toggleLanguage": "Toggle language",
     "german": "German",
     "english": "English"
+  },
+  "mt940Table": {
+    "noTransactions": "No transactions found in MT940 file.",
+    "statementNo": "Statement No",
+    "account": "Account",
+    "totalTransactions": "Total Transactions",
+    "openingBalance": "Opening Balance",
+    "closingBalance": "Closing Balance",
+    "transactions": "Transactions",
+    "date": "Date",
+    "type": "Type",
+    "reference": "Reference",
+    "description": "Description",
+    "amount": "Amount"
   }
 }

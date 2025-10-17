@@ -47,5 +47,19 @@
     "toggleLanguage": "Sprache umschalten",
     "german": "Deutsch",
     "english": "Englisch"
+  },
+  "mt940Table": {
+    "noTransactions": "Keine Transaktionen in MT940-Datei gefunden.",
+    "statementNo": "Kontoauszug Nr.",
+    "account": "Konto",
+    "totalTransactions": "Transaktionen gesamt",
+    "openingBalance": "Anfangssaldo",
+    "closingBalance": "Endsaldo",
+    "transactions": "Transaktionen",
+    "date": "Datum",
+    "type": "Typ",
+    "reference": "Referenz",
+    "description": "Beschreibung",
+    "amount": "Betrag"
   }
 }

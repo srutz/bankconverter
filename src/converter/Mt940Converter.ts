@@ -2,7 +2,13 @@
  * CAMT.053 to MT940 Converter
  */
 
-import type { Balance, Camt053Document, Statement as CamtStatement, Entry, EntryDetails } from './Camt';
+import type {
+  Balance,
+  Camt053Document,
+  Statement as CamtStatement,
+  Entry,
+  EntryDetails,
+} from "./Camt";
 import type {
   ClosingBalance,
   DebitCredit,
@@ -11,7 +17,7 @@ import type {
   OpeningBalance,
   StatementLine,
   TransactionInformation,
-} from './Mt940';
+} from "./Mt940";
 
 type ConversionOptions = {
   defaultCurrency?: string;
@@ -24,8 +30,8 @@ export class CamtToMt940Converter {
 
   constructor(options: ConversionOptions = {}) {
     this.options = {
-      defaultCurrency: 'EUR',
-      statementNumberPrefix: '',
+      defaultCurrency: "EUR",
+      statementNumberPrefix: "",
       includeEntryDetails: true,
       ...options,
     };
@@ -33,16 +39,23 @@ export class CamtToMt940Converter {
 
   convert(camtDoc: Camt053Document): Mt940File {
     return {
-      statements: camtDoc.statements.map((stmt, idx) => this.convertStatement(stmt, idx)),
+      statements: camtDoc.statements.map((stmt, idx) =>
+        this.convertStatement(stmt, idx),
+      ),
     };
   }
 
-  private convertStatement(camtStmt: CamtStatement, index: number): Mt940Statement {
+  private convertStatement(
+    camtStmt: CamtStatement,
+    index: number,
+  ): Mt940Statement {
     const openingBalance = this.findOpeningBalance(camtStmt.balances);
     const closingBalance = this.findClosingBalance(camtStmt.balances);
 
     if (!openingBalance || !closingBalance) {
-      throw new Error(`Statement ${camtStmt.identification}: Missing opening or closing balance`);
+      throw new Error(
+        `Statement ${camtStmt.identification}: Missing opening or closing balance`,
+      );
     }
 
     const transactions = this.options.includeEntryDetails
@@ -51,26 +64,32 @@ export class CamtToMt940Converter {
 
     return {
       transactionReference: {
-        tag: '20',
+        tag: "20",
         reference: camtStmt.identification,
       },
       accountIdentification: {
-        tag: '25',
+        tag: "25",
         accountNumber: this.extractAccountNumber(camtStmt.account),
       },
       statementNumber: {
-        tag: '28C',
+        tag: "28C",
         statementNumber: `${this.options.statementNumberPrefix}${camtStmt.electronicSequenceNumber || index + 1}`,
         sequenceNumber: camtStmt.legalSequenceNumber?.toString(),
       },
-      openingBalance: this.convertToMt940Balance(openingBalance, '60F') as OpeningBalance,
+      openingBalance: this.convertToMt940Balance(
+        openingBalance,
+        "60F",
+      ) as OpeningBalance,
       transactions,
-      closingBalance: this.convertToMt940Balance(closingBalance, '62F') as ClosingBalance,
+      closingBalance: this.convertToMt940Balance(
+        closingBalance,
+        "62F",
+      ) as ClosingBalance,
     };
   }
 
   private convertEntries(entries: Entry[]): StatementLine[] {
-    return entries.map(entry => this.convertEntry(entry));
+    return entries.map((entry) => this.convertEntry(entry));
   }
 
   private convertEntriesWithDetails(entries: Entry[]): StatementLine[] {
@@ -93,7 +112,7 @@ export class CamtToMt940Converter {
 
   private convertEntry(entry: Entry): StatementLine {
     const line: StatementLine = {
-      tag: '61',
+      tag: "61",
       valueDate: entry.valueDate || entry.bookingDate || new Date(),
       entryDate: entry.bookingDate,
       debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
@@ -102,12 +121,14 @@ export class CamtToMt940Converter {
     };
 
     if (entry.bankTransactionCode) {
-      line.transactionType = this.mapBankTransactionCode(entry.bankTransactionCode);
+      line.transactionType = this.mapBankTransactionCode(
+        entry.bankTransactionCode,
+      );
     }
 
     if (entry.additionalEntryInformation) {
       line.information = {
-        tag: '86',
+        tag: "86",
         description: entry.additionalEntryInformation,
       };
     }
@@ -115,24 +136,30 @@ export class CamtToMt940Converter {
     return line;
   }
 
-  private convertEntryDetail(entry: Entry, detail: EntryDetails): StatementLine {
+  private convertEntryDetail(
+    entry: Entry,
+    detail: EntryDetails,
+  ): StatementLine {
     const line: StatementLine = {
-      tag: '61',
+      tag: "61",
       valueDate: entry.valueDate || entry.bookingDate || new Date(),
       entryDate: entry.bookingDate,
-      debitCredit: this.convertDebitCredit(detail.creditDebitIndicator),
+      debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
       //amount: detail.amount.value,
       amount: entry.amount.value,
-      bankReference: detail.accountServicerReference || entry.accountServicerReference,
+      bankReference:
+        detail.accountServicerReference || entry.accountServicerReference,
     };
 
     if (detail.bankTransactionCode) {
-      line.transactionType = this.mapBankTransactionCode(detail.bankTransactionCode);
+      line.transactionType = this.mapBankTransactionCode(
+        detail.bankTransactionCode,
+      );
     }
 
     // Build tag 86 information
     const info: TransactionInformation = {
-      tag: '86',
+      tag: "86",
     };
 
     if (detail.bankTransactionCode) {
@@ -154,17 +181,25 @@ export class CamtToMt940Converter {
     }
 
     if (detail.remittanceInformation) {
-      if (detail.remittanceInformation.unstructured && detail.remittanceInformation.unstructured.length > 0) {
-        info.description = detail.remittanceInformation.unstructured.join(' ');
+      if (
+        detail.remittanceInformation.unstructured &&
+        detail.remittanceInformation.unstructured.length > 0
+      ) {
+        info.description = detail.remittanceInformation.unstructured.join(" ");
       }
 
-      if (detail.remittanceInformation.structured?.creditorReferenceInformation?.reference) {
-        info.reference = detail.remittanceInformation.structured.creditorReferenceInformation.reference;
+      if (
+        detail.remittanceInformation.structured?.creditorReferenceInformation
+          ?.reference
+      ) {
+        info.reference =
+          detail.remittanceInformation.structured.creditorReferenceInformation.reference;
       }
     }
 
     if (detail.references?.endToEndIdentification) {
-      info.reference = info.reference || detail.references.endToEndIdentification;
+      info.reference =
+        info.reference || detail.references.endToEndIdentification;
     }
 
     // Only add information if there's actual content
@@ -176,7 +211,7 @@ export class CamtToMt940Converter {
   }
 
   private findBalance(balances: Balance[], type: string): Balance | undefined {
-    return balances.find(b => b.type === type);
+    return balances.find((b) => b.type === type);
   }
 
   private findOpeningBalance(balances: Balance[]): Balance | undefined {
@@ -184,18 +219,18 @@ export class CamtToMt940Converter {
     // OPBD = Opening Booked (standard)
     // PRCD = Previously Closed Booked (acts as opening for next period)
     // ITBD = Interim Booked
-    const openingTypes = ['OPBD', 'PRCD', 'ITBD'];
-    
+    const openingTypes = ["OPBD", "PRCD", "ITBD"];
+
     for (const type of openingTypes) {
       const balance = this.findBalance(balances, type);
       if (balance) {
         return balance;
       }
     }
-    
+
     // If no specific opening balance found, try to find any balance that could serve as opening
     // Look for the first balance that's not a closing balance
-    return balances.find(b => !['CLBD', 'CLAV', 'FWAV'].includes(b.type));
+    return balances.find((b) => !["CLBD", "CLAV", "FWAV"].includes(b.type));
   }
 
   private findClosingBalance(balances: Balance[]): Balance | undefined {
@@ -203,20 +238,23 @@ export class CamtToMt940Converter {
     // CLBD = Closing Booked (standard)
     // CLAV = Closing Available
     // FWAV = Forward Available
-    const closingTypes = ['CLBD', 'CLAV', 'FWAV'];
-    
+    const closingTypes = ["CLBD", "CLAV", "FWAV"];
+
     for (const type of closingTypes) {
       const balance = this.findBalance(balances, type);
       if (balance) {
         return balance;
       }
     }
-    
+
     // If no specific closing balance found, return the last balance
     return balances[balances.length - 1];
   }
 
-  private convertToMt940Balance(balance: Balance, tag: '60F' | '60M' | '62F' | '62M'): OpeningBalance | ClosingBalance {
+  private convertToMt940Balance(
+    balance: Balance,
+    tag: "60F" | "60M" | "62F" | "62M",
+  ): OpeningBalance | ClosingBalance {
     return {
       tag,
       debitCredit: this.convertDebitCredit(balance.creditDebitIndicator),
@@ -228,12 +266,12 @@ export class CamtToMt940Converter {
 
   private convertDebitCredit(cdtDbtInd: string): DebitCredit {
     switch (cdtDbtInd) {
-      case 'CRDT':
-        return 'C';
-      case 'DBIT':
-        return 'D';
+      case "CRDT":
+        return "C";
+      case "DBIT":
+        return "D";
       default:
-        return 'C';
+        return "C";
     }
   }
 
@@ -246,7 +284,7 @@ export class CamtToMt940Converter {
     if (account.iban) return account.iban;
     if (account.other?.identification) return account.other.identification;
     if (account.name) return account.name;
-    return 'UNKNOWN';
+    return "UNKNOWN";
   }
 
   private mapBankTransactionCode(btc: {
@@ -256,34 +294,34 @@ export class CamtToMt940Converter {
   }): string {
     // Map CAMT bank transaction codes to MT940 transaction types
     // This is a simplified mapping - expand based on your needs
-    
+
     if (btc.proprietary) {
       return btc.proprietary;
     }
 
-    const family = btc.family || '';
-    const subFamily = btc.subFamily || '';
+    const family = btc.family || "";
+    const subFamily = btc.subFamily || "";
 
     // Common mappings
-    if (family === 'PMNT') {
-      if (subFamily === 'RCDT') return 'NTRF'; // Received credit transfer
-      if (subFamily === 'RDDT') return 'NDDT'; // Received direct debit
-      if (subFamily === 'ICDT') return 'NTRF'; // Issued credit transfer
-      if (subFamily === 'IDDT') return 'NDDT'; // Issued direct debit
+    if (family === "PMNT") {
+      if (subFamily === "RCDT") return "NTRF"; // Received credit transfer
+      if (subFamily === "RDDT") return "NDDT"; // Received direct debit
+      if (subFamily === "ICDT") return "NTRF"; // Issued credit transfer
+      if (subFamily === "IDDT") return "NDDT"; // Issued direct debit
     }
 
-    if (family === 'MCOP') return 'MCOP'; // Card payment
+    if (family === "MCOP") return "MCOP"; // Card payment
 
-    if (family === 'CAJT') {
-      if (subFamily === 'CHRG') return 'NCHG'; // Charges
-      if (subFamily === 'COMM') return 'NCOM'; // Commission
+    if (family === "CAJT") {
+      if (subFamily === "CHRG") return "NCHG"; // Charges
+      if (subFamily === "COMM") return "NCOM"; // Commission
     }
 
-    if (family === 'ICDT') return 'NTRF'; // Issued credit transfer
-    if (family === 'RCDT') return 'NTRF'; // Received credit transfer
-    if (family === 'DDBT') return 'NDDT'; // Direct debit
+    if (family === "ICDT") return "NTRF"; // Issued credit transfer
+    if (family === "RCDT") return "NTRF"; // Received credit transfer
+    if (family === "DDBT") return "NDDT"; // Direct debit
 
     // Default
-    return 'NMSC'; // Miscellaneous
+    return "NMSC"; // Miscellaneous
   }
 }

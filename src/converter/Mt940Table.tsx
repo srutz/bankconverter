@@ -1,8 +1,7 @@
 import { useAtomValue } from "jotai";
-import { MdCopyAll, MdDownload } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import { InfoField } from "@/components/base/InfoField";
 import { languageAtom } from "@/components/tabs/atoms";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -43,6 +42,7 @@ export function Mt940Table({
   code: string;
   filename?: string;
 }) {
+  const { t } = useTranslation();
   const language = useAtomValue(languageAtom);
   if (!mt940 || !mt940.statements || mt940.statements.length === 0) {
     return null;
@@ -59,7 +59,7 @@ export function Mt940Table({
   if (allTransactions.length === 0) {
     return (
       <div className="text-center py-4 text-gray-500">
-        No transactions found in MT940 file.
+        {t("mt940Table.noTransactions")}
       </div>
     );
   }
@@ -74,14 +74,23 @@ export function Mt940Table({
     mt940.statements[mt940.statements.length - 1].closingBalance;
 
   return (
-    <div className="h-1 grow flex flex-col">
+    <div className="px-2 h-1 grow flex flex-col">
       <ViewerButtonsBar filename={filename} code={code}></ViewerButtonsBar>
-      <div className="my-4 grid grid-cols-3">
-        <InfoField name="Statement No" value={statementNumbers.join(", ")} />
-        <InfoField name="Account" value={accountNumbers.join(",")} />
-        <InfoField name="Total Transactions" value={allTransactions.length} />
+      <div className="mt-8 mb-4 grid grid-cols-3 gap-1">
         <InfoField
-          name="Opening Balance"
+          name={t("mt940Table.statementNo")}
+          value={statementNumbers.join(", ")}
+        />
+        <InfoField
+          name={t("mt940Table.account")}
+          value={accountNumbers.join(",")}
+        />
+        <InfoField
+          name={t("mt940Table.totalTransactions")}
+          value={allTransactions.length}
+        />
+        <InfoField
+          name={t("mt940Table.openingBalance")}
           value={formatAmount(
             firstOpeningBalance.amount,
             language,
@@ -89,7 +98,7 @@ export function Mt940Table({
           )}
         />
         <InfoField
-          name="Closing Balance"
+          name={t("mt940Table.closingBalance")}
           value={formatAmount(
             lastClosingBalance.amount,
             language,
@@ -98,24 +107,26 @@ export function Mt940Table({
         />
       </div>
       <Table>
-        <TableCaption>Transactions</TableCaption>
+        <TableCaption>{t("mt940Table.transactions")}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Reference</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>{t("mt940Table.date")}</TableHead>
+            <TableHead>{t("mt940Table.type")}</TableHead>
+            <TableHead>{t("mt940Table.reference")}</TableHead>
+            <TableHead>{t("mt940Table.description")}</TableHead>
+            <TableHead className="text-right">
+              {t("mt940Table.amount")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {allTransactions.map((transaction, index) => {
             const statement = mt940.statements[transaction.statementIndex];
             const currency = statement.openingBalance.currency;
-            const isDebit =
+            const debit =
               transaction.debitCredit === "D" ||
               transaction.debitCredit === "RD";
-            const amount = isDebit ? -transaction.amount : transaction.amount;
+            const amount = debit ? -transaction.amount : transaction.amount;
 
             return (
               <TableRow key={`${transaction.statementIndex}-${index}`}>
@@ -125,7 +136,7 @@ export function Mt940Table({
                 <TableCell>
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      isDebit
+                      debit
                         ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                         : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                     }`}
@@ -146,7 +157,7 @@ export function Mt940Table({
                 </TableCell>
                 <TableCell
                   className={`text-right font-medium ${
-                    isDebit
+                    debit
                       ? "text-red-600 dark:text-red-400"
                       : "text-green-600 dark:text-green-400"
                   }`}
