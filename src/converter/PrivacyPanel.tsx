@@ -9,13 +9,10 @@ export function PrivacyPanel() {
           <TabsTrigger value="german">Deutsch</TabsTrigger>
           <TabsTrigger value="english">English</TabsTrigger>
         </TabsList>
-        <TabsContent
-          value="german"
-          className="self-stretch w-full"
-        >
+        <TabsContent value="german" className="self-stretch w-full">
           <PrivacyGerman></PrivacyGerman>
         </TabsContent>
-        <TabsContent value="english" >
+        <TabsContent value="english">
           <PrivacyEnglish></PrivacyEnglish>
         </TabsContent>
       </Tabs>
