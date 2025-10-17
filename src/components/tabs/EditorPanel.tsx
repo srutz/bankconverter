@@ -43,7 +43,9 @@ const downloadFile = (content: string, filename: string) => {
 
 export function EditorPanel({ editor }: { editor: Editor }) {
   const settings = useAtomValue(settingsAtom);
-  const [autoDownloadedFiles, setAutoDownloadedFiles] = useAtom(autoDownloadedFilesAtom);
+  const [autoDownloadedFiles, setAutoDownloadedFiles] = useAtom(
+    autoDownloadedFilesAtom,
+  );
   const { content } = editor;
   const mt940filename = editor.filename
     ? editor.filename.replace(/\.camt053\.xml$/i, ".mt940.txt")
@@ -61,7 +63,7 @@ export function EditorPanel({ editor }: { editor: Editor }) {
 
     // Create a unique key for this file content to track if it's been downloaded
     const fileKey = `${editor.filename}-${content.length}-${content.slice(0, 100)}`;
-    
+
     // Check if this specific file has already been auto-downloaded
     if (autoDownloadedFiles.has(fileKey)) {
       return;
@@ -71,11 +73,19 @@ export function EditorPanel({ editor }: { editor: Editor }) {
     const mt940Content = mt940Output({ mt940: mt940Result });
     if (mt940Content) {
       downloadFile(mt940Content, mt940filename);
-      
+
       // Mark this file as downloaded
-      setAutoDownloadedFiles(prev => new Set([...prev, fileKey]));
+      setAutoDownloadedFiles((prev) => new Set([...prev, fileKey]));
     }
-  }, [settings.autoDownload, mt940Result, editor.filename, content, mt940filename, autoDownloadedFiles, setAutoDownloadedFiles]);
+  }, [
+    settings.autoDownload,
+    mt940Result,
+    editor.filename,
+    content,
+    mt940filename,
+    autoDownloadedFiles,
+    setAutoDownloadedFiles,
+  ]);
 
   return (
     <div className="grow h-1 flex flex-col items-center">
