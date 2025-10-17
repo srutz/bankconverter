@@ -4,7 +4,7 @@
   "upload": {
     "title": "Bankconverter",
     "instructions": "From CAMT to MT940 ... Upload your CAMT file",
-    "openExample": "Example Camt053.xml (External Link"
+    "openExample": "Example Camt053.xml (External Link in german)"
   },
   "codeViewer": {
     "copyToClipboard": "Copy to Clipboard",
