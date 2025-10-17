@@ -8,6 +8,40 @@ import {
   StatementLine,
   TransactionInformation,
 } from "./Mt940";
+import { MT940_LIMITS } from "./Mt940Limits";
+
+// Helper functions for MT940 length handling
+function truncateField(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  return value.substring(0, maxLength);
+}
+
+function wrapText(text: string, maxLength: number): string[] {
+  if (text.length <= maxLength) return [text];
+
+  const lines: string[] = [];
+  let remaining = text;
+
+  while (remaining.length > 0) {
+    if (remaining.length <= maxLength) {
+      lines.push(remaining);
+      break;
+    }
+
+    // Try to break at word boundary
+    let breakPoint = maxLength;
+    const lastSpace = remaining.lastIndexOf(" ", maxLength);
+    if (lastSpace > maxLength * 0.7) {
+      // Only break at space if it's not too early
+      breakPoint = lastSpace;
+    }
+
+    lines.push(remaining.substring(0, breakPoint));
+    remaining = remaining.substring(breakPoint).trimStart();
+  }
+
+  return lines;
+}
 
 // return the mt940 datastructure in textformat which is actually mt940
 export function mt940Output({ mt940 }: { mt940: Mt940File }): string {
@@ -28,20 +62,34 @@ function formatStatement(statement: Mt940Statement): string[] {
   const lines: string[] = [];
 
   // Tag 20: Transaction Reference
-  lines.push(`:20:${statement.transactionReference.reference}`);
+  lines.push(
+    `:20:${truncateField(statement.transactionReference.reference, MT940_LIMITS.TRANSACTION_REFERENCE)}`,
+  );
 
   // Tag 21: Related Reference (optional)
   if (statement.relatedReference) {
-    lines.push(`:21:${statement.relatedReference.reference}`);
+    lines.push(
+      `:21:${truncateField(statement.relatedReference.reference, MT940_LIMITS.RELATED_REFERENCE)}`,
+    );
   }
 
   // Tag 25: Account Identification
-  lines.push(`:25:${statement.accountIdentification.accountNumber}`);
+  lines.push(
+    `:25:${truncateField(statement.accountIdentification.accountNumber, MT940_LIMITS.ACCOUNT_NUMBER)}`,
+  );
 
   // Tag 28C: Statement Number/Sequence Number
-  let statementNumberLine = `:28C:${statement.statementNumber.statementNumber}`;
+  const statementNumber = truncateField(
+    statement.statementNumber.statementNumber,
+    MT940_LIMITS.STATEMENT_NUMBER,
+  );
+  let statementNumberLine = `:28C:${statementNumber}`;
   if (statement.statementNumber.sequenceNumber) {
-    statementNumberLine += `/${statement.statementNumber.sequenceNumber}`;
+    const sequenceNumber = truncateField(
+      statement.statementNumber.sequenceNumber,
+      MT940_LIMITS.SEQUENCE_NUMBER,
+    );
+    statementNumberLine += `/${sequenceNumber}`;
   }
   lines.push(statementNumberLine);
 
@@ -102,9 +150,21 @@ function formatTransaction(transaction: StatementLine): string[] {
   const fundsCode = transaction.fundsCode || "";
   const amount = formatAmount(transaction.amount);
   const transactionType = transaction.transactionType || "NMSC";
-  const customerRef = transaction.customerReference || "";
-  const bankRef = transaction.bankReference || "";
-  const supplementaryDetails = transaction.supplementaryDetails || "";
+  const customerRef = transaction.customerReference
+    ? truncateField(
+        transaction.customerReference,
+        MT940_LIMITS.CUSTOMER_REFERENCE,
+      )
+    : "";
+  const bankRef = transaction.bankReference
+    ? truncateField(transaction.bankReference, MT940_LIMITS.BANK_REFERENCE)
+    : "";
+  const supplementaryDetails = transaction.supplementaryDetails
+    ? truncateField(
+        transaction.supplementaryDetails,
+        MT940_LIMITS.SUPPLEMENTARY_DETAILS,
+      )
+    : "";
 
   let line61 = `:61:${valueDate}`;
   if (entryDate && entryDate !== valueDate) {
@@ -137,55 +197,99 @@ function formatTransaction(transaction: StatementLine): string[] {
 }
 
 function formatTransactionInformation(info: TransactionInformation): string {
-  let line86 = ":86:";
-
-  // Build structured information
+  // Build structured information with length limits
   const parts: string[] = [];
 
   if (info.code) {
-    parts.push(info.code);
+    parts.push(truncateField(info.code, 3));
   }
 
   if (info.transactionCode) {
-    parts.push(`?00${info.transactionCode}`);
+    parts.push(
+      `?00${truncateField(info.transactionCode, MT940_LIMITS.TRANSACTION_CODE)}`,
+    );
   }
 
   if (info.description) {
-    parts.push(`?20${info.description}`);
-  }
-
-  if (info.name) {
-    parts.push(`?32${info.name}`);
+    // Split long descriptions across multiple ?20-?29 fields
+    const descriptionLines = wrapText(
+      info.description,
+      MT940_LIMITS.DESCRIPTION_FIELD,
+    );
+    for (let i = 0; i < Math.min(descriptionLines.length, 10); i++) {
+      // ?20-?29 = 10 fields max
+      const fieldNumber = 20 + i;
+      parts.push(`?${fieldNumber}${descriptionLines[i]}`);
+    }
   }
 
   if (info.accountNumber) {
-    parts.push(`?30${info.accountNumber}`);
+    parts.push(
+      `?30${truncateField(info.accountNumber, MT940_LIMITS.ACCOUNT_FIELD)}`,
+    );
   }
 
   if (info.bankCode) {
-    parts.push(`?31${info.bankCode}`);
+    parts.push(
+      `?31${truncateField(info.bankCode, MT940_LIMITS.ACCOUNT_FIELD)}`,
+    );
+  }
+
+  if (info.name) {
+    // Split long names across ?32 and ?33 fields
+    const nameLines = wrapText(info.name, MT940_LIMITS.NAME_FIELD);
+    for (let i = 0; i < Math.min(nameLines.length, 2); i++) {
+      // ?32 and ?33
+      const fieldNumber = 32 + i;
+      parts.push(`?${fieldNumber}${nameLines[i]}`);
+    }
   }
 
   if (info.reference) {
-    parts.push(`?34${info.reference}`);
+    parts.push(
+      `?34${truncateField(info.reference, MT940_LIMITS.REFERENCE_FIELD)}`,
+    );
   }
 
   if (info.details) {
-    parts.push(`?60${info.details}`);
+    parts.push(
+      `?60${truncateField(info.details, MT940_LIMITS.DESCRIPTION_FIELD)}`,
+    );
   }
 
   if (info.additionalInfo) {
-    parts.push(`?61${info.additionalInfo}`);
+    parts.push(
+      `?61${truncateField(info.additionalInfo, MT940_LIMITS.DESCRIPTION_FIELD)}`,
+    );
   }
+
+  // Combine all parts and handle line wrapping for tag 86
+  let content = parts.join("");
 
   // If no structured information, use description as fallback
   if (parts.length === 0 && info.description) {
-    line86 += info.description;
-  } else {
-    line86 += parts.join("");
+    content = truncateField(
+      info.description,
+      MT940_LIMITS.INFO_LINE_LENGTH - 4,
+    ); // -4 for ":86:"
   }
 
-  return line86;
+  // Handle line wrapping for tag 86
+  const maxContentLength = MT940_LIMITS.INFO_LINE_LENGTH - 4; // -4 for ":86:"
+  if (content.length <= maxContentLength) {
+    return `:86:${content}`;
+  }
+
+  // Split long content across multiple lines
+  const lines = wrapText(content, maxContentLength);
+  const result = [`:86:${lines[0]}`];
+
+  // Add continuation lines (without tag prefix)
+  for (let i = 1; i < lines.length; i++) {
+    result.push(lines[i]);
+  }
+
+  return result.join("\r\n");
 }
 
 function formatDate(date: Date): string {

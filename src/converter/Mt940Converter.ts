@@ -19,6 +19,18 @@ import type {
   TransactionInformation,
 } from "./Mt940";
 
+// Helper function to clean and prepare text for MT940 format
+function sanitizeForMt940(text: string): string {
+  if (!text) return "";
+
+  // Remove or replace problematic characters
+  return text
+    .replace(/[\r\n\t]/g, " ") // Replace line breaks and tabs with spaces
+    .replace(/[^\x20-\x7E]/g, "") // Remove non-printable ASCII characters
+    .replace(/\s+/g, " ") // Collapse multiple spaces
+    .trim();
+}
+
 type ConversionOptions = {
   defaultCurrency?: string;
   statementNumberPrefix?: string;
@@ -65,15 +77,19 @@ export class CamtToMt940Converter {
     return {
       transactionReference: {
         tag: "20",
-        reference: camtStmt.identification,
+        reference: sanitizeForMt940(camtStmt.identification),
       },
       accountIdentification: {
         tag: "25",
-        accountNumber: this.extractAccountNumber(camtStmt.account),
+        accountNumber: sanitizeForMt940(
+          this.extractAccountNumber(camtStmt.account),
+        ),
       },
       statementNumber: {
         tag: "28C",
-        statementNumber: `${this.options.statementNumberPrefix}${camtStmt.electronicSequenceNumber || index + 1}`,
+        statementNumber: sanitizeForMt940(
+          `${this.options.statementNumberPrefix}${camtStmt.electronicSequenceNumber || index + 1}`,
+        ),
         sequenceNumber: camtStmt.legalSequenceNumber?.toString(),
       },
       openingBalance: this.convertToMt940Balance(
@@ -119,7 +135,9 @@ export class CamtToMt940Converter {
       entryDate: entry.bookingDate,
       debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
       amount: entry.amount.value,
-      bankReference: entry.accountServicerReference,
+      bankReference: entry.accountServicerReference
+        ? sanitizeForMt940(entry.accountServicerReference)
+        : undefined,
     };
 
     if (entry.bankTransactionCode) {
@@ -131,7 +149,7 @@ export class CamtToMt940Converter {
     if (entry.additionalEntryInformation) {
       line.information = {
         tag: "86",
-        description: entry.additionalEntryInformation,
+        description: sanitizeForMt940(entry.additionalEntryInformation),
       };
     }
 
@@ -142,7 +160,6 @@ export class CamtToMt940Converter {
     entry: Entry,
     detail: EntryDetails,
     detailsCount: number,
-    s,
   ): StatementLine {
     const line: StatementLine = {
       tag: "61",
@@ -151,7 +168,11 @@ export class CamtToMt940Converter {
       debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
       amount: detailsCount === 1 ? entry.amount.value : detail.amount.value,
       bankReference:
-        detail.accountServicerReference || entry.accountServicerReference,
+        sanitizeForMt940(
+          detail.accountServicerReference ||
+            entry.accountServicerReference ||
+            "",
+        ) || undefined,
     };
     if (detail.bankTransactionCode) {
       line.transactionType = this.mapBankTransactionCode(
@@ -163,18 +184,24 @@ export class CamtToMt940Converter {
       tag: "86",
     };
     if (detail.bankTransactionCode) {
-      info.transactionCode = detail.bankTransactionCode.proprietary;
+      info.transactionCode = sanitizeForMt940(
+        detail.bankTransactionCode.proprietary || "",
+      );
     }
     if (detail.relatedParties) {
       if (detail.relatedParties.creditor?.name) {
-        info.name = detail.relatedParties.creditor.name;
+        info.name = sanitizeForMt940(detail.relatedParties.creditor.name);
       } else if (detail.relatedParties.debtor?.name) {
-        info.name = detail.relatedParties.debtor.name;
+        info.name = sanitizeForMt940(detail.relatedParties.debtor.name);
       }
       if (detail.relatedParties.creditorAccount?.iban) {
-        info.accountNumber = detail.relatedParties.creditorAccount.iban;
+        info.accountNumber = sanitizeForMt940(
+          detail.relatedParties.creditorAccount.iban,
+        );
       } else if (detail.relatedParties.debtorAccount?.iban) {
-        info.accountNumber = detail.relatedParties.debtorAccount.iban;
+        info.accountNumber = sanitizeForMt940(
+          detail.relatedParties.debtorAccount.iban,
+        );
       }
     }
 
@@ -183,21 +210,26 @@ export class CamtToMt940Converter {
         detail.remittanceInformation.unstructured &&
         detail.remittanceInformation.unstructured.length > 0
       ) {
-        info.description = detail.remittanceInformation.unstructured.join(" ");
+        info.description = sanitizeForMt940(
+          detail.remittanceInformation.unstructured.join(" "),
+        );
       }
 
       if (
         detail.remittanceInformation.structured?.creditorReferenceInformation
           ?.reference
       ) {
-        info.reference =
-          detail.remittanceInformation.structured.creditorReferenceInformation.reference;
+        info.reference = sanitizeForMt940(
+          detail.remittanceInformation.structured.creditorReferenceInformation
+            .reference,
+        );
       }
     }
 
     if (detail.references?.endToEndIdentification) {
       info.reference =
-        info.reference || detail.references.endToEndIdentification;
+        info.reference ||
+        sanitizeForMt940(detail.references.endToEndIdentification);
     }
 
     // Only add information if there's actual content
