@@ -23,7 +23,7 @@ export const settingsAtom = atomWithStorage<Settings>(
   "bankconverter-settings",
   {
     showAdditionalTabs: false,
-    autoDownload: true,
+    autoDownload: false,
     language: "de",
   },
 );

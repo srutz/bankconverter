@@ -5,8 +5,9 @@ import { CodeViewer } from "@/converter/CodeViewer";
 import { convertToMt940 } from "@/converter/camtutil";
 import { Mt940File } from "@/converter/Mt940";
 import { mt940Output } from "@/converter/Mt940Output";
+import { Mt940Table } from "@/converter/Mt940Table";
 import { makeDtAusFilenameFromCamtFilename } from "@/lib/fileutil";
-import { Tabs } from "../base/Tabs";
+import { Tab, Tabs } from "../base/Tabs";
 import { autoDownloadedFilesAtom, Editor, settingsAtom } from "./atoms";
 
 function CamtViewer({ camt }: { camt: Camt053Document }) {
@@ -88,51 +89,53 @@ export function EditorPanel({ editor }: { editor: Editor }) {
     setAutoDownloadedFiles,
   ]);
 
+  const tabs: Tab[] = [
+    {
+      visible: true,
+      name: "CAMT.053",
+      content: <CodeViewer code={content} />,
+    },
+    {
+      visible: settings.showAdditionalTabs ?? false,
+      name: "CAMT.053 (Parsed)",
+      content:
+        parseResult?.success && parseResult.data ? (
+          <CamtViewer camt={parseResult.data} />
+        ) : (
+          <div className="p-4 text-red-500">Error parsing CAMT.053 file.</div>
+        ),
+    },
+    {
+      visible: settings.showAdditionalTabs ?? false,
+      name: "MT940 (Parsed)",
+      content: mt940Result ? (
+        <Mt940JsonViewer mt940={mt940Result} />
+      ) : (
+        <div className="p-4 text-red-500">Error converting to MT940.</div>
+      ),
+    },
+    {
+      visible: true,
+      name: "MT940 Lines",
+      content: <Mt940Table mt940={mt940Result} />,
+    },
+    {
+      visible: true,
+      name: "MT940",
+      content: (
+        <Mt940OutputViewer mt940={mt940Result} filename={mt940filename} />
+      ),
+    },
+  ];
+  const visibleTabs = tabs.filter((tab) => tab.visible);
+  const initialSelected = visibleTabs.length > 0 ? visibleTabs.length - 1 : 0;
+
   return (
     <div className="grow h-1 flex flex-col items-center">
       <div className="self-stretch grow flex flex-col items-center gap-1 px-2 py-2 relative">
         <Tabs
-          initialSelected={1}
-          tabs={[
-            {
-              visible: true,
-              name: "CAMT.053",
-              content: <CodeViewer code={content} />,
-            },
-            {
-              visible: settings.showAdditionalTabs ?? false,
-              name: "CAMT.053 (Parsed)",
-              content:
-                parseResult?.success && parseResult.data ? (
-                  <CamtViewer camt={parseResult.data} />
-                ) : (
-                  <div className="p-4 text-red-500">
-                    Error parsing CAMT.053 file.
-                  </div>
-                ),
-            },
-            {
-              visible: settings.showAdditionalTabs ?? false,
-              name: "MT940 (Parsed)",
-              content: mt940Result ? (
-                <Mt940JsonViewer mt940={mt940Result} />
-              ) : (
-                <div className="p-4 text-red-500">
-                  Error converting to MT940.
-                </div>
-              ),
-            },
-            {
-              visible: true,
-              name: "MT940",
-              content: (
-                <Mt940OutputViewer
-                  mt940={mt940Result}
-                  filename={mt940filename}
-                />
-              ),
-            },
-          ]}
+          initialSelected={initialSelected}
+          tabs={tabs}
           className="self-stretch"
         />
       </div>

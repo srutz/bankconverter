@@ -1,21 +1,12 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAtomValue } from "jotai";
+import { languageAtom } from "@/components/tabs/atoms";
 import { H3 } from "../components/base/H3";
 
 export function PrivacyPanel() {
+  const language = useAtomValue(languageAtom);
   return (
     <div className="h-1 grow flex flex-col">
-      <Tabs defaultValue="german" className="self-stretch my-4">
-        <TabsList>
-          <TabsTrigger value="german">Deutsch</TabsTrigger>
-          <TabsTrigger value="english">English</TabsTrigger>
-        </TabsList>
-        <TabsContent value="german" className="self-stretch w-full">
-          <PrivacyGerman></PrivacyGerman>
-        </TabsContent>
-        <TabsContent value="english">
-          <PrivacyEnglish></PrivacyEnglish>
-        </TabsContent>
-      </Tabs>
+      {language === "de" ? <PrivacyGerman /> : <PrivacyEnglish />}
     </div>
   );
 }
