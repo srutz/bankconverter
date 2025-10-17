@@ -145,7 +145,6 @@ export class CamtToMt940Converter {
       valueDate: entry.valueDate || entry.bookingDate || new Date(),
       entryDate: entry.bookingDate,
       debitCredit: this.convertDebitCredit(entry.creditDebitIndicator),
-      //amount: detail.amount.value,
       amount: entry.amount.value,
       bankReference:
         detail.accountServicerReference || entry.accountServicerReference,

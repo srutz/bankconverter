@@ -76,19 +76,7 @@ export function Mt940Table({
   return (
     <div className="px-2 h-1 grow flex flex-col">
       <ViewerButtonsBar filename={filename} code={code}></ViewerButtonsBar>
-      <div className="mt-8 mb-4 grid grid-cols-3 gap-1">
-        <InfoField
-          name={t("mt940Table.statementNo")}
-          value={statementNumbers.join(", ")}
-        />
-        <InfoField
-          name={t("mt940Table.account")}
-          value={accountNumbers.join(",")}
-        />
-        <InfoField
-          name={t("mt940Table.totalTransactions")}
-          value={allTransactions.length}
-        />
+      <div className="mt-8 mb-4 grid grid-cols-3 gap-1 self-start gap-x-8">
         <InfoField
           name={t("mt940Table.openingBalance")}
           value={formatAmount(
@@ -98,12 +86,24 @@ export function Mt940Table({
           )}
         />
         <InfoField
+          name={t("mt940Table.statementNo")}
+          value={statementNumbers.join(", ")}
+        />
+        <InfoField
+          name={t("mt940Table.account")}
+          value={accountNumbers.join(",")}
+        />
+        <InfoField
           name={t("mt940Table.closingBalance")}
           value={formatAmount(
             lastClosingBalance.amount,
             language,
             lastClosingBalance.currency,
           )}
+        />
+        <InfoField
+          name={t("mt940Table.totalTransactions")}
+          value={allTransactions.length}
         />
       </div>
       <Table>
