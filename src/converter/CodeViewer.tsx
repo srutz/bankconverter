@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MdCopyAll } from "react-icons/md";
+import { MdCopyAll, MdDownload } from "react-icons/md";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
 import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
@@ -60,10 +60,6 @@ export function CodeViewer({
 
   return (
     <div className="h-1 grow flex flex-col gap-2 items-stretch overflow-hidden">
-      <SyntaxHighlighter language="javascript" style={customStyle}>
-        {code}
-      </SyntaxHighlighter>
-      <div className="flex-grow"></div>
       <div className="flex flex-row gap-2">
         <Button variant="secondary" size="sm" onClick={handleCopyToClipboard}>
           <MdCopyAll></MdCopyAll>
@@ -71,11 +67,15 @@ export function CodeViewer({
         </Button>
         {filename && (
           <Button variant="secondary" size="sm" onClick={handleDownload}>
-            <MdCopyAll></MdCopyAll>
+            <MdDownload></MdDownload>
             {t("codeViewer.downloadFile")}
           </Button>
         )}
       </div>
+      <SyntaxHighlighter language="javascript" style={customStyle}>
+        {code}
+      </SyntaxHighlighter>
+      <div className="flex-grow"></div>
     </div>
   );
 }

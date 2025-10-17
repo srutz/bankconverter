@@ -3,7 +3,7 @@
   "description": "Konvertierung von CAMT zu MT940",
   "upload": {
     "title": "Bankconverter",
-    "instructions": "Laden Sie Ihre CAMT-Datei hoch"
+    "instructions": "CAMT zu Mt940 ... Laden Sie Ihre CAMT-Datei hoch"
   },
   "codeViewer": {
     "copyToClipboard": "In Zwischenablage kopieren",
@@ -34,8 +34,9 @@
   },
   "settings": {
     "title": "Bankconverter Einstellungen",
-    "description": "Konfigurieren Sie Ihre Einstellungen und Anwendungsoptionen",
+    "description": "Einstellungen und Anwendungsoptionen",
     "additionalTabs": "Zusätzliche Info-Tabs aktivieren",
+    "autoDownload": "Automatischer Download",
     "language": "Benutzeroberflächen-Sprache",
     "languagePlaceholder": "Sprache",
     "confirm": "Bestätigen",

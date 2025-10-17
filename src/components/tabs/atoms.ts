@@ -15,6 +15,7 @@ export type Language = "en" | "de";
 export type Settings = {
   showAdditionalTabs?: boolean;
   language?: Language;
+  autoDownload?: boolean;
 };
 
 // Use atomWithStorage to persist settings in localStorage
@@ -22,6 +23,7 @@ export const settingsAtom = atomWithStorage<Settings>(
   "bankconverter-settings",
   {
     showAdditionalTabs: false,
+    autoDownload: true,
     language: "en",
   },
 );

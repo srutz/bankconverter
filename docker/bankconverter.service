@@ -1,0 +1,15 @@
+# /etc/systemd/system/bankconverter.service
+
+[Unit]
+Description=Bankconverter Tool
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -p 19000:3000 --name bankconverter_1 bankconverter
+ExecStop=/usr/bin/docker stop -t 1 bankconverter_1 
+ExecStopPost=/usr/bin/docker rm -f bankconverter_1
+
+[Install]
+WantedBy=multi-user.target

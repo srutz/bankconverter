@@ -29,11 +29,15 @@ function RouteComponent() {
   const { t } = useTranslation();
   const [settings, setSettings] = useAtom(settingsAtom);
   const [language, setLanguage] = useAtom(languageAtom);
-  const checkboxId = useId();
+  const additionalTabsId = useId();
+  const autoDownloadId = useId();
 
   // Local state for form
   const [localShowAdditionalTabs, setLocalShowAdditionalTabs] = useState(
     settings.showAdditionalTabs || false,
+  );
+  const [localAutoDownload, setAutoDownload] = useState(
+    settings.autoDownload || false,
   );
   const [localLanguage, setLocalLanguage] = useState<Language>(language);
 
@@ -46,6 +50,7 @@ function RouteComponent() {
     // Update the atoms
     setSettings({
       showAdditionalTabs: localShowAdditionalTabs,
+      autoDownload: localAutoDownload,
       language: localLanguage,
     });
 
@@ -74,17 +79,7 @@ function RouteComponent() {
           <DialogDescription>{t("settings.description")}</DialogDescription>
         </DialogHeader>
         <div className="h-1 grow flex flex-col gap-4 pt-4">
-          <div className="flex gap-2 items-center">
-            <Checkbox
-              id={checkboxId}
-              checked={localShowAdditionalTabs}
-              onCheckedChange={(checked) =>
-                setLocalShowAdditionalTabs(!!checked)
-              }
-            />
-            <Label htmlFor={checkboxId}>{t("settings.additionalTabs")}</Label>
-          </div>
-          <div className="flex gap-2 items-center">
+          <div className="my-2 flex flex-col gap-1 items-start">
             <Label className="font-semibold">{t("settings.language")}</Label>
             <ComboBox
               options={languages}
@@ -93,6 +88,26 @@ function RouteComponent() {
               value={localLanguage}
               onChange={(option) => setLocalLanguage(option.value as Language)}
             />
+          </div>
+          <div className="flex gap-2 items-center">
+            <Checkbox
+              id={additionalTabsId}
+              checked={localShowAdditionalTabs}
+              onCheckedChange={(checked) =>
+                setLocalShowAdditionalTabs(!!checked)
+              }
+            />
+            <Label htmlFor={additionalTabsId}>
+              {t("settings.additionalTabs")}
+            </Label>
+          </div>
+          <div className="flex gap-2 items-center">
+            <Checkbox
+              id={autoDownloadId}
+              checked={localAutoDownload}
+              onCheckedChange={(checked) => setAutoDownload(!!checked)}
+            />
+            <Label htmlFor={autoDownloadId}>{t("settings.autoDownload")}</Label>
           </div>
         </div>
         <DialogFooter>

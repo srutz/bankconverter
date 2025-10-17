@@ -3,19 +3,19 @@
  */
 
 // Credit/Debit indicator
-type CreditDebitCode = 'CRDT' | 'DBIT';
+type CreditDebitCode = "CRDT" | "DBIT";
 
 // Entry status
-type EntryStatus = 'BOOK' | 'PDNG' | 'INFO';
+type EntryStatus = "BOOK" | "PDNG" | "INFO";
 
 // Balance types
 type BalanceType =
-  | 'OPBD' // Opening Booked
-  | 'CLBD' // Closing Booked
-  | 'ITBD' // Interim Booked
-  | 'CLAV' // Closing Available
-  | 'FWAV' // Forward Available
-  | 'PRCD'; // Previously Closed Booked
+  | "OPBD" // Opening Booked
+  | "CLBD" // Closing Booked
+  | "ITBD" // Interim Booked
+  | "CLAV" // Closing Available
+  | "FWAV" // Forward Available
+  | "PRCD"; // Previously Closed Booked
 
 // Party identification
 type PartyIdentification = {
@@ -182,13 +182,13 @@ type GroupHeader = {
 };
 
 // CAMT.053 Document
-type Camt053Document = {
+export type Camt053Document = {
   groupHeader: GroupHeader;
   statements: Statement[];
 };
 
 // Parser result
-type Camt053ParseResult = {
+export type Camt053ParseResult = {
   success: boolean;
   data?: Camt053Document;
   errors?: string[];
@@ -196,7 +196,7 @@ type Camt053ParseResult = {
 };
 
 // Parser configuration
-type Camt053ParserConfig = {
+export type Camt053ParserConfig = {
   strictMode?: boolean;
   validateBalances?: boolean;
   parseNestedTransactions?: boolean;

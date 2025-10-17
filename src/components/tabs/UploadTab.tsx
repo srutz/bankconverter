@@ -34,11 +34,11 @@ export function UploadTab() {
           className="self-stretch grow flex flex-col items-center px-8 py-8"
         >
           <H2>{t("upload.title")}</H2>
-          <div className="flex flex-col items-center">
+          <div className="h-1 grow flex flex-col items-center">
             <div className="grow flex flow-col items-center justify-center">
               <LucideUpload className="mt-4 h-16 w-16 text-muted-foreground" />
             </div>
-            <p className="mt-4 text-muted-foreground">
+            <p className="mt-4 text-center text-muted-foreground min-w-[400px]">
               {t("upload.instructions")}
             </p>
           </div>
