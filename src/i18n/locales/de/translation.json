@@ -42,5 +42,10 @@
     "languagePlaceholder": "Sprache",
     "confirm": "Bestätigen",
     "saveSuccess": "Einstellungen erfolgreich gespeichert"
+  },
+  "languageToggle": {
+    "toggleLanguage": "Sprache umschalten",
+    "german": "Deutsch",
+    "english": "Englisch"
   }
 }

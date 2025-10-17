@@ -42,5 +42,10 @@
     "languagePlaceholder": "Language",
     "confirm": "Confirm",
     "saveSuccess": "Settings saved successfully"
+  },
+  "languageToggle": {
+    "toggleLanguage": "Toggle language",
+    "german": "German",
+    "english": "English"
   }
 }

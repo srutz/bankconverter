@@ -13,21 +13,22 @@ import { languageAtom } from "../tabs/atoms";
 
 export function LanguageToggle() {
   const [_, setLanguage] = useAtom(languageAtom);
+  const { t } = useTranslation();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="m-0 py-0 px-0 self-start h-7 w-7">
           <MdLanguage></MdLanguage>
-          <span className="sr-only">Sprache umschalten</span>
+          <span className="sr-only">{t("languageToggle.toggleLanguage")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setLanguage("de")}>
-          Deutsch
+          {t("languageToggle.german")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setLanguage("en")}>
-          Englisch
+          {t("languageToggle.english")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
