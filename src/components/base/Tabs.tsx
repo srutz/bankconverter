@@ -62,7 +62,7 @@ export function Tabs({
         <div className="w-1 grow"></div>
         {cornerAction}
       </div>
-      <div className="h-1 grow overflow-hidden flex flex-col">
+      <div className="h-1 grow overflow-hidden flex flex-col px-1">
         {tabs
           .filter((t) => t.visible)
           .map((tab, i) => (

@@ -74,7 +74,7 @@ export function Mt940Table({
     mt940.statements[mt940.statements.length - 1].closingBalance;
 
   return (
-    <div className="px-2 h-1 grow flex flex-col">
+    <div className="h-1 grow flex flex-col">
       <ViewerButtonsBar filename={filename} code={code}></ViewerButtonsBar>
       <div className="my-8 grid grid-cols-3 gap-1 self-start gap-x-8">
         <InfoField
