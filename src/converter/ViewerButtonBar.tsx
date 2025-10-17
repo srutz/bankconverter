@@ -39,7 +39,7 @@ export function ViewerButtonsBar({
     setEditors([]);
   };
   return (
-    <div className="flex flex-row gap-2">
+    <div className="my-2 flex flex-row gap-2">
       <Button variant="secondary" size="sm" onClick={handleCopyToClipboard}>
         <MdCopyAll></MdCopyAll>
         {t("codeViewer.copyToClipboard")}

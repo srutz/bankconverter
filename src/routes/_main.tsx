@@ -49,10 +49,13 @@ function App() {
           <div className="flex flex-row gap-1 mr-2">
             <SidebarTrigger />
             <div className="grow" />
+
             <div className="flex flex-row items-center justify-center">
+              {/*
               <span className="text-sm text-muted-foreground">
                 {editors.length > 0 ? `${editors[0].name}` : ""}
               </span>
+                */}
             </div>
             <div className="grow" />
             <LanguageToggle />

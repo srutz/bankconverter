@@ -76,7 +76,7 @@ export function Mt940Table({
   return (
     <div className="px-2 h-1 grow flex flex-col">
       <ViewerButtonsBar filename={filename} code={code}></ViewerButtonsBar>
-      <div className="mt-8 mb-4 grid grid-cols-3 gap-1 self-start gap-x-8">
+      <div className="my-8 grid grid-cols-3 gap-1 self-start gap-x-8">
         <InfoField
           name={t("mt940Table.openingBalance")}
           value={formatAmount(
@@ -115,7 +115,7 @@ export function Mt940Table({
         />
       </div>
       <Table>
-        <TableCaption>{t("mt940Table.transactions")}</TableCaption>
+        <TableCaption>{filename || t("mt940Table.transactions")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>{t("mt940Table.date")}</TableHead>
