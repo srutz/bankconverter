@@ -47,13 +47,20 @@ function RouteComponent() {
           {editors.length === 0 ? (
             <>
               <UploadTab />
-              <Block className="w-[360px] min-h-[200px] self-center flex flex-col items-center justify-center">
+              <Block className="relative w-[480px] min-h-[200px] self-center flex flex-col items-center justify-center">
+                <div className="absolute inset-0 bg-black rounded-lg opacity-40">
+                  <img
+                    alt="Video thumbnail"
+                    className="absolute inset-0 object-cover w-full h-full rounded-lg p-4"
+                    src="/images/shot.png"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowVideo(true)}
-                  className="self-stretch grow flex justify-center items-center"
+                  className="relative p-4 flex justify-center items-center bg-black rounded-lg"
                 >
-                  <LucidePlay className="mt-4 h-16 w-16 text-muted-foreground" />
+                  <LucidePlay className="h-16 w-16 text-muted-foreground" />
                 </button>
               </Block>
 
@@ -62,19 +69,17 @@ function RouteComponent() {
                   open={showVideo}
                   onOpenChange={() => setShowVideo(false)}
                 >
-                  <DialogContent className="min-w-[95%] h-[95%] flex flex-col">
+                  <DialogContent className="min-w-[95%] h-[95%] flex flex-col items-center">
                     <DialogHeader>
-                      <DialogTitle>{t("settings.title")}</DialogTitle>
-                      <DialogDescription>
-                        {t("settings.description")}
-                      </DialogDescription>
+                      <DialogTitle>{t("description")}</DialogTitle>
+                      <DialogDescription></DialogDescription>
                     </DialogHeader>
                     <VideoPlayer
                       src="/videos/camt-converter.mp4"
                       autoPlay
                       loop
                       controls
-                      containerClasses="min-h-[400px]"
+                      containerClasses="max-w-[1126px]"
                     ></VideoPlayer>
                   </DialogContent>
                 </Dialog>
