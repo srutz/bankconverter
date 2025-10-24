@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { LucidePlay } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Block } from "@/components/base/Block";
 import { Page } from "@/components/base/Page";
@@ -10,6 +10,7 @@ import { VideoPlayer } from "@/components/base/VideoPlayer";
 import { editorsAtom } from "@/components/tabs/atoms";
 import { EditorPanel } from "@/components/tabs/EditorPanel";
 import { UploadTab } from "@/components/tabs/UploadTab";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -48,7 +49,7 @@ function RouteComponent() {
             <>
               <UploadTab />
               <Block className="relative w-[480px] min-h-[200px] self-center flex flex-col items-center justify-center">
-                <div className="absolute inset-0 bg-black rounded-lg opacity-40">
+                <div className="absolute inset-6 bg-black rounded-lg opacity-40">
                   <img
                     alt="Video thumbnail"
                     className="absolute inset-0 object-cover w-full h-full rounded-lg p-4"
@@ -63,6 +64,19 @@ function RouteComponent() {
                   <LucidePlay className="h-16 w-16 text-muted-foreground" />
                 </button>
               </Block>
+              <div className="flex flex-col items-center">
+                <Button
+                  variant="link"
+                  onClick={() =>
+                    window!.open(
+                      "https://www.sepa-tools.de/camt-testdateien.html",
+                      "_blank",
+                    )
+                  }
+                >
+                  {t("upload.openExample")}
+                </Button>
+              </div>
 
               {showVideo && (
                 <Dialog

@@ -46,20 +46,6 @@ export function UploadTab() {
           </div>
         </Dropzone>
       </Block>
-
-      <div className="flex flex-col items-center">
-        <Button
-          variant="link"
-          onClick={() =>
-            window!.open(
-              "https://www.sepa-tools.de/camt-testdateien.html",
-              "_blank",
-            )
-          }
-        >
-          {t("upload.openExample")}
-        </Button>
-      </div>
     </div>
   );
 }
