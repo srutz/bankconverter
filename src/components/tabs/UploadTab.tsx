@@ -27,7 +27,7 @@ export function UploadTab() {
     <div className="flex flex-col">
       <Block
         className={cn(
-          "mt-8 self-center flex flex-col items-center p-0",
+          "w-[480px] mt-8 self-center flex flex-col items-center p-0",
           "relative",
         )}
       >
